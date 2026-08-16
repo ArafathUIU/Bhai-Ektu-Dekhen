@@ -4,13 +4,16 @@ namespace App\Services;
 
 use App\Models\Issue;
 use App\Models\IssueStatusHistory;
+use App\Models\Notification;
 use App\Models\Report;
 use Illuminate\Support\Facades\DB;
 
 class IssueService
 {
-    public function __construct(private readonly PublicIdGenerator $ids)
-    {
+    public function __construct(
+        private readonly PublicIdGenerator $ids,
+        private readonly NotificationService $notifications,
+    ) {
     }
 
     public function createIssueFromReport(Report $report, ?string $severity = null): Issue
@@ -64,6 +67,7 @@ class IssueService
 
             $issue->save();
             $this->recordStatus($issue, $oldStatus, $newStatus, $changedBy, $reason);
+            $this->notifyStatusChange($issue, $oldStatus, $newStatus);
 
             return $issue;
         });
@@ -85,6 +89,23 @@ class IssueService
             'changed_by' => $changedBy,
             'reason' => $reason,
         ]);
+    }
+
+    private function notifyStatusChange(Issue $issue, ?string $from, string $to): void
+    {
+        $type = match ($to) {
+            Issue::STATUS_RESOLVED => Notification::TYPE_ISSUE_RESOLVED,
+            Issue::STATUS_REOPENED => Notification::TYPE_ISSUE_REOPENED,
+            Issue::STATUS_ASSIGNED => Notification::TYPE_ISSUE_ASSIGNED,
+            default => 'ISSUE_STATUS_CHANGED',
+        };
+
+        $this->notifications->notifyIssueReporters(
+            $issue,
+            $type,
+            "Issue {$issue->public_id} status changed",
+            "Status updated from {$from} to {$to}.",
+        );
     }
 
     private function buildTitle(Report $report): string

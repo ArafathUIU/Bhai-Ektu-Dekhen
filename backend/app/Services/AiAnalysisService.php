@@ -6,6 +6,7 @@ use App\Models\AiAnalysis;
 use App\Models\Issue;
 use App\Models\IssueCategory;
 use App\Models\IssueMatch;
+use App\Models\Notification;
 use App\Models\Report;
 use Illuminate\Support\Facades\Http;
 
@@ -90,6 +91,14 @@ class AiAnalysisService
             $report->update(['issue_id' => $issue->id, 'status' => Report::STATUS_REPORTED]);
             $issue->update(['last_reported_at' => now()]);
             $this->recordMatch($report, $issue, $candidate, IssueMatch::DECISION_MERGED);
+
+            app(NotificationService::class)->notifyReportAuthor(
+                $report,
+                Notification::TYPE_POSSIBLE_DUPLICATE,
+                'Possible duplicate detected',
+                "Your report was merged with issue {$issue->public_id} nearby.",
+                ['issue_id' => $issue->id, 'issue_public_id' => $issue->public_id],
+            );
 
             return;
         }

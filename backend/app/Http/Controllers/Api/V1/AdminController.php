@@ -7,6 +7,7 @@ use App\Models\Assignment;
 use App\Models\Issue;
 use App\Models\Report;
 use App\Models\Team;
+use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,9 @@ use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
+    public function __construct(private readonly NotificationService $notifications)
+    {
+    }
     public function dashboard(): JsonResponse
     {
         $total = Issue::count();
@@ -120,6 +124,15 @@ class AdminController extends Controller
             'status' => $validated['status'],
             'completed_at' => $validated['status'] === Assignment::STATUS_COMPLETED ? now() : null,
         ]);
+
+        if ($validated['status'] === Assignment::STATUS_COMPLETED) {
+            $this->notifications->notifyIssueReporters(
+                $assignment->issue,
+                \App\Models\Notification::TYPE_ISSUE_RESOLVED,
+                "Issue {$assignment->issue->public_id} work completed",
+                'The assigned team marked the work as completed.',
+            );
+        }
 
         return response()->json([
             'data' => ['assignment' => $assignment->load('team')],

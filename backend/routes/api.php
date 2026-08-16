@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\IntelligenceController;
 use App\Http\Controllers\Api\V1\IssueController;
 use App\Http\Controllers\Api\V1\MapController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/reports', [ReportController::class, 'store'])
             ->middleware('throttle:reports');
         Route::get('/reports/{publicId}', [ReportController::class, 'show']);
+
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
         Route::post('/issues/{publicId}/support', [IssueController::class, 'support']);
 
