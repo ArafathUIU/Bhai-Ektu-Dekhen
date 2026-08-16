@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'ai_worker' => [
+        'base_url' => env('AI_WORKER_URL', 'http://127.0.0.1:9000/api/v1'),
+        'timeout' => env('AI_WORKER_TIMEOUT', 30),
+    ],
+
 ];

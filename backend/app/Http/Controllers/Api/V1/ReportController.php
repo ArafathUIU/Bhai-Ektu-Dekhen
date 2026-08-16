@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\AnalyzeReport;
 use App\Models\Issue;
 use App\Models\Media;
 use App\Models\Report;
@@ -63,6 +64,8 @@ class ReportController extends Controller
             'mime_type' => $request->file('photo')->getMimeType(),
             'size' => $request->file('photo')->getSize(),
         ]);
+
+        AnalyzeReport::dispatch($report->id);
 
         return response()->json([
             'data' => [

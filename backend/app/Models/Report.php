@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 #[Fillable(['user_id', 'issue_id', 'category_id', 'description', 'latitude', 'longitude', 'status'])]
@@ -37,5 +38,10 @@ class Report extends Model
     public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable');
+    }
+
+    public function analyses(): HasMany
+    {
+        return $this->hasMany(AiAnalysis::class);
     }
 }
