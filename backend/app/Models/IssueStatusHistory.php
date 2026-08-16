@@ -12,6 +12,8 @@ class IssueStatusHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'issue_status_history';
+
     public function issue(): BelongsTo
     {
         return $this->belongsTo(Issue::class);

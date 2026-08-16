@@ -38,14 +38,17 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 - [x] Authorization middleware (role-based) — verified 403 for citizen, 200 for admin
 - [x] Push API response envelope (`data`, `message`, `errors`)
 
-### ⬜ Phase 2 — Core Reporting
-- [ ] `issue_categories` table + seed (road_damage, drainage, street_light, garbage)
-- [ ] `reports` table (public_id BEK-xxxxx, user, description, lat/lng, status)
-- [ ] `media` polymorphic table (REPORT_PHOTO, RESOLUTION_BEFORE/AFTER)
-- [ ] Create report API with image upload → object storage
-- [ ] Report status lifecycle + `issue_status_history` table
-- [ ] My Reports (list own reports)
-- [ ] Report details endpoint
+### ✅ Phase 2 — Core Reporting
+- [x] `issue_categories` table + seed (road_damage, drainage, street_light, garbage)
+- [x] `reports` table (public_id BEK-xxxxx, user, description, lat/lng, status)
+- [x] `media` polymorphic table (REPORT_PHOTO, RESOLUTION_BEFORE/AFTER)
+- [x] Create report API with image upload → object storage (local disk, later S3)
+- [x] Report status lifecycle + `issue_status_history` table
+- [x] My Reports (list own reports)
+- [x] Report details endpoint
+- [x] `issues` table + report→issue linking (`IssueService::createIssueFromReport`)
+- [x] Issue lifecycle: status transitions + history + severity
+- [x] Community support endpoint (`issue_supports`)
 
 ### ⬜ Phase 3 — Map
 - [ ] PostGIS spatial column (`GEOGRAPHY(POINT,4326)`) + GIST index
@@ -90,6 +93,7 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 | 2026-08-16 | Setup | Init git repo, linked GitHub remote, merged README, committed architecture doc | ✅ Done |
 | 2026-08-16 | Setup | Added implementation tracking doc | ✅ Done |
 | 2026-08-16 | 1 | Scaffolded Laravel 13 + Sanctum, PostGIS Postgres container (docker-compose), roles, users, auth API, role middleware | ✅ Done |
+| 2026-08-16 | 2 | Report creation with photo upload + PostGIS point, media, categories, issues, status history, support endpoints | ✅ Done |
 
 ---
 
