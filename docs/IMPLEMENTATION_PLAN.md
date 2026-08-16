@@ -30,13 +30,13 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 ## Phased Implementation Plan (from architecture doc §22)
 
 ### ✅ Phase 1 — Foundation
-- [ ] Scaffold Laravel backend (`composer create-project`)
-- [ ] Configure environment + database connection (PostgreSQL/PostGIS)
-- [ ] Roles model + `users.role_id` (USER / MODERATOR / ADMIN)
-- [ ] Auth API: register, login, logout, profile (token-based)
-- [ ] Users API (profile, list for admins)
-- [ ] Authorization middleware (role-based)
-- [ ] Push API response envelope (`data`, `message`, `errors`)
+- [x] Scaffold Laravel backend (`composer create-project`)
+- [x] Configure environment + database connection (PostgreSQL/PostGIS via Docker)
+- [x] Roles model + `users.role_id` (USER / MODERATOR / ADMIN)
+- [x] Auth API: register, login, logout, profile (Sanctum token-based)
+- [x] Users API (profile, list for admins)
+- [x] Authorization middleware (role-based) — verified 403 for citizen, 200 for admin
+- [x] Push API response envelope (`data`, `message`, `errors`)
 
 ### ⬜ Phase 2 — Core Reporting
 - [ ] `issue_categories` table + seed (road_damage, drainage, street_light, garbage)
@@ -89,6 +89,7 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 |------|-------|---------------|--------|
 | 2026-08-16 | Setup | Init git repo, linked GitHub remote, merged README, committed architecture doc | ✅ Done |
 | 2026-08-16 | Setup | Added implementation tracking doc | ✅ Done |
+| 2026-08-16 | 1 | Scaffolded Laravel 13 + Sanctum, PostGIS Postgres container (docker-compose), roles, users, auth API, role middleware | ✅ Done |
 
 ---
 
@@ -111,3 +112,5 @@ docs/          → planning and tracking documents
 | 2 | 2026-08-16 | `Report` ≠ `Issue` as separate entities | Reports are observations; issues are confirmed real-world problems (arch §4.1) |
 | 3 | 2026-08-16 | Token-based auth (Sanctum) for API-first app | Frontend is separate Next.js SPA; stateless API auth required |
 | 4 | 2026-08-16 | PostgreSQL + PostGIS for spatial data | Required for nearby/duplicate geo queries |
+| 5 | 2026-08-16 | PostGIS runs in Docker (port 5433) | Avoids local install conflicts; reproducible via docker-compose |
+| 6 | 2026-08-16 | `EnsureRole` middleware + `role:admin` route alias | Backend authorization, not just hidden frontend buttons (arch §3.15) |
