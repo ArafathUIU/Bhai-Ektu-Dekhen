@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\IntelligenceController;
 use App\Http\Controllers\Api\V1\IssueController;
 use App\Http\Controllers\Api\V1\MapController;
 use App\Http\Controllers\Api\V1\ReportController;
@@ -19,6 +20,9 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/map/nearby', [MapController::class, 'nearby']);
     Route::get('/map/heatmap', [MapController::class, 'heatmap']);
+
+    Route::get('/intelligence/hotspots', [IntelligenceController::class, 'hotspots']);
+    Route::get('/intelligence/analytics', [IntelligenceController::class, 'analytics']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -40,6 +44,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware('role:admin')->group(function () {
+            Route::get('/intelligence/priorities', [IntelligenceController::class, 'priorities']);
             Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
             Route::get('/admin/teams', [AdminController::class, 'teams']);
             Route::post('/admin/teams', [AdminController::class, 'storeTeam']);

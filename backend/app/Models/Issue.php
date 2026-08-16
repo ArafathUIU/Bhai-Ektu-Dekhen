@@ -40,6 +40,15 @@ class Issue extends Model
 
     public const STATUS_REJECTED = 'REJECTED';
 
+    protected function casts(): array
+    {
+        return [
+            'first_reported_at' => 'datetime',
+            'last_reported_at' => 'datetime',
+            'resolved_at' => 'datetime',
+        ];
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(IssueCategory::class, 'category_id');

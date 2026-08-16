@@ -72,6 +72,8 @@ class IssueService
     public function addSupport(Issue $issue, int $userId): void
     {
         $issue->supports()->firstOrCreate(['user_id' => $userId]);
+
+        app(PriorityScoringService::class)->apply($issue);
     }
 
     private function recordStatus(Issue $issue, ?string $from, string $to, ?int $changedBy = null, ?string $reason = null): void
