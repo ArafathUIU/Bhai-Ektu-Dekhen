@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
-import { api, type Report } from "@/lib/api";
+import { api, type AiAnalysis, type Report } from "@/lib/api";
 
 const STATUS_STYLES: Record<string, string> = {
   PROCESSING: "bg-yellow-100 text-yellow-800",
@@ -55,6 +55,17 @@ export default function MyReportsPage() {
                 {report.category?.name ?? "Unclassified"} ·{" "}
                 {new Date(report.created_at).toLocaleString()}
               </p>
+              {report.issue_id && (
+                <Link
+                  href={`/issues/${report.issue_id}`}
+                  className="mt-2 inline-block text-xs font-medium text-teal-600 hover:underline"
+                >
+                  View linked issue →
+                </Link>
+              )}
+              {report.analyses && report.analyses.length > 0 && (
+                <AnalysisCard analysis={report.analyses[0]} />
+              )}
             </li>
           ))}
           {!loading && reports.length === 0 && (
@@ -63,5 +74,26 @@ export default function MyReportsPage() {
         </ul>
       </main>
     </>
+  );
+}
+
+function AnalysisCard({ analysis }: { analysis: AiAnalysis }) {
+  const confidence = analysis.confidence !== null ? Math.round(analysis.confidence * 100) : null;
+
+  return (
+    <div className="mt-3 rounded-md bg-teal-50 p-3 text-xs text-teal-900">
+      <p className="font-semibold">AI Analysis</p>
+      {analysis.status === "COMPLETED" && (
+        <p className="mt-1">
+          Category: <span className="font-medium">{analysis.predicted_category_slug?.replace(/_/g, " ")}</span>
+          {confidence !== null && <span> · {confidence}% confident</span>}
+          {analysis.severity_score !== null && (
+            <span> · severity {Math.round(analysis.severity_score * 100)}%</span>
+          )}
+        </p>
+      )}
+      {analysis.status === "FAILED" && <p className="mt-1 text-red-700">Analysis failed.</p>}
+      {analysis.status === "PENDING" && <p className="mt-1">Queued for analysis...</p>}
+    </div>
   );
 }

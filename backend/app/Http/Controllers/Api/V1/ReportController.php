@@ -83,7 +83,10 @@ class ReportController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $reports = $request->user()->reports()->with(['media', 'category'])->latest()->paginate(15);
+        $reports = $request->user()->reports()
+            ->with(['media', 'category', 'analyses' => fn ($q) => $q->latest()])
+            ->latest()
+            ->paginate(15);
 
         return response()->json([
             'data' => ['reports' => $reports],

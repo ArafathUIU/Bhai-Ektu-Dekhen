@@ -29,6 +29,7 @@ export type Report = {
   created_at: string;
   category: Category | null;
   media: Media[];
+  analyses?: AiAnalysis[];
 };
 
 export type Issue = {
@@ -51,6 +52,42 @@ export type Media = {
   type: string;
   url: string | null;
   mime_type: string | null;
+};
+
+export type StatusHistoryEntry = {
+  id: number;
+  from_status: string | null;
+  to_status: string;
+  reason: string | null;
+  created_at: string;
+  changed_by: { id: number; name: string } | null;
+};
+
+export type AiAnalysis = {
+  id: number;
+  predicted_category_slug: string | null;
+  confidence: number | null;
+  severity_score: number | null;
+  status: string;
+  created_at: string;
+  processing_time_ms: number | null;
+};
+
+export type IssueDetail = Issue & {
+  description: string | null;
+  reports: (Report & { user: { name: string } | null })[];
+  statusHistory: StatusHistoryEntry[];
+  supports: { user_id: number }[];
+};
+
+export type NotificationItem = {
+  id: number;
+  type: string;
+  title: string;
+  message: string | null;
+  read_at: string | null;
+  created_at: string;
+  data: Record<string, unknown> | null;
 };
 
 let token: string | null = null;
@@ -111,6 +148,18 @@ export const api = {
   createReport: (form: FormData) =>
     request<{ data: { report: Report } }>('/reports', { method: 'POST', body: form }),
   issues: () => request<{ data: { issues: { data: Issue[] } } }>('/issues'),
+  issue: (publicId: string) =>
+    request<{ data: { issue: IssueDetail } }>(`/issues/${publicId}`),
+  supportIssue: (publicId: string) =>
+    request<{ data: { support_count: number } }>(`/issues/${publicId}/support`, { method: 'POST' }),
   nearby: (lat: number, lng: number, radius = 500) =>
     request<{ data: { issues: Issue[] } }>(`/map/nearby?latitude=${lat}&longitude=${lng}&radius=${radius}`),
+  notifications: () =>
+    request<{ data: { notifications: { data: NotificationItem[] }; unread_count: number } }>('/notifications'),
+  unreadCount: () =>
+    request<{ data: { unread_count: number } }>('/notifications/unread-count'),
+  markNotificationRead: (id: number) =>
+    request<{ data: { notification: NotificationItem } }>(`/notifications/${id}/read`, { method: 'POST' }),
+  markAllNotificationsRead: () =>
+    request<{ data: { unread_count: number } }>('/notifications/read-all', { method: 'POST' }),
 };
