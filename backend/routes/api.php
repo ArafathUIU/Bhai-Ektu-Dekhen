@@ -10,19 +10,19 @@ use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->middleware('throttle:auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
     });
 
-    Route::get('/issues', [IssueController::class, 'index']);
-    Route::get('/issues/{publicId}', [IssueController::class, 'show']);
+    Route::get('/issues', [IssueController::class, 'index'])->middleware('throttle:api');
+    Route::get('/issues/{publicId}', [IssueController::class, 'show'])->middleware('throttle:api');
 
-    Route::get('/map/nearby', [MapController::class, 'nearby']);
-    Route::get('/map/heatmap', [MapController::class, 'heatmap']);
+    Route::get('/map/nearby', [MapController::class, 'nearby'])->middleware('throttle:api');
+    Route::get('/map/heatmap', [MapController::class, 'heatmap'])->middleware('throttle:api');
 
-    Route::get('/intelligence/hotspots', [IntelligenceController::class, 'hotspots']);
-    Route::get('/intelligence/analytics', [IntelligenceController::class, 'analytics']);
+    Route::get('/intelligence/hotspots', [IntelligenceController::class, 'hotspots'])->middleware('throttle:api');
+    Route::get('/intelligence/analytics', [IntelligenceController::class, 'analytics'])->middleware('throttle:api');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -32,7 +32,8 @@ Route::prefix('v1')->group(function () {
             ->middleware('role:admin');
 
         Route::get('/reports', [ReportController::class, 'index']);
-        Route::post('/reports', [ReportController::class, 'store']);
+        Route::post('/reports', [ReportController::class, 'store'])
+            ->middleware('throttle:reports');
         Route::get('/reports/{publicId}', [ReportController::class, 'show']);
 
         Route::post('/issues/{publicId}/support', [IssueController::class, 'support']);

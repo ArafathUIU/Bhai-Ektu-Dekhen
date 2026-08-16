@@ -9,6 +9,7 @@ use App\Models\Report;
 use App\Services\PriorityScoringService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class IntelligenceController extends Controller
@@ -24,10 +25,14 @@ class IntelligenceController extends Controller
             'min_issues' => ['nullable', 'integer', 'min:1', 'max:100'],
         ]);
 
-        $hotspots = $this->scoring->hotspots(
-            (float) ($validated['cell_size'] ?? 0.01),
-            (int) ($validated['min_issues'] ?? 2),
-        );
+        $key = sprintf('intel.hotspots.%s.%s', $validated['cell_size'] ?? 0.01, $validated['min_issues'] ?? 2);
+
+        $hotspots = Cache::remember($key, 300, function () use ($validated) {
+            return $this->scoring->hotspots(
+                (float) ($validated['cell_size'] ?? 0.01),
+                (int) ($validated['min_issues'] ?? 2),
+            );
+        });
 
         return response()->json(['data' => ['hotspots' => $hotspots]]);
     }
@@ -56,55 +61,57 @@ class IntelligenceController extends Controller
 
     public function analytics(): JsonResponse
     {
-        $totalIssues = Issue::count();
-        $openIssues = Issue::whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])->count();
-        $resolvedIssues = Issue::whereIn('status', [Issue::STATUS_RESOLVED, Issue::STATUS_CLOSED])->count();
-
-        $severityBreakdown = Issue::query()
-            ->select('severity', DB::raw('COUNT(*) as count'))
-            ->whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])
-            ->groupBy('severity')
-            ->orderByDesc('count')
-            ->pluck('count', 'severity');
-
-        $statusBreakdown = Issue::query()
-            ->select('status', DB::raw('COUNT(*) as count'))
-            ->groupBy('status')
-            ->orderByDesc('count')
-            ->pluck('count', 'status');
-
-        $categoryBreakdown = IssueCategory::query()
-            ->withCount(['issues' => fn ($q) => $q->whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])])
-            ->orderByDesc('issues_count')
-            ->get(['id', 'name', 'slug']);
-
-        $reportTrend = Report::query()
-            ->selectRaw("DATE(created_at) as date, COUNT(*) as count")
-            ->where('created_at', '>=', now()->subDays(14))
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
-
-        $avgResolutionHours = Issue::query()
-            ->whereNotNull('resolved_at')
-            ->selectRaw('AVG(EXTRACT(EPOCH FROM (resolved_at - first_reported_at)) / 3600) as avg_hours')
-            ->value('avg_hours');
-
         return response()->json([
-            'data' => [
-                'summary' => [
-                    'total_issues' => $totalIssues,
-                    'open_issues' => $openIssues,
-                    'resolved_issues' => $resolvedIssues,
-                    'avg_resolution_hours' => $avgResolutionHours !== null
-                        ? round((float) $avgResolutionHours, 1)
-                        : null,
-                ],
-                'severity_breakdown' => $severityBreakdown,
-                'status_breakdown' => $statusBreakdown,
-                'category_breakdown' => $categoryBreakdown,
-                'report_trend_14d' => $reportTrend,
-            ],
+            'data' => Cache::remember('intel.analytics', 300, function () {
+                $totalIssues = Issue::count();
+                $openIssues = Issue::whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])->count();
+                $resolvedIssues = Issue::whereIn('status', [Issue::STATUS_RESOLVED, Issue::STATUS_CLOSED])->count();
+
+                $severityBreakdown = Issue::query()
+                    ->select('severity', DB::raw('COUNT(*) as count'))
+                    ->whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])
+                    ->groupBy('severity')
+                    ->orderByDesc('count')
+                    ->pluck('count', 'severity');
+
+                $statusBreakdown = Issue::query()
+                    ->select('status', DB::raw('COUNT(*) as count'))
+                    ->groupBy('status')
+                    ->orderByDesc('count')
+                    ->pluck('count', 'status');
+
+                $categoryBreakdown = IssueCategory::query()
+                    ->withCount(['issues' => fn ($q) => $q->whereNotIn('status', [Issue::STATUS_CLOSED, Issue::STATUS_REJECTED])])
+                    ->orderByDesc('issues_count')
+                    ->get(['id', 'name', 'slug']);
+
+                $reportTrend = Report::query()
+                    ->selectRaw("DATE(created_at) as date, COUNT(*) as count")
+                    ->where('created_at', '>=', now()->subDays(14))
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+
+                $avgResolutionHours = Issue::query()
+                    ->whereNotNull('resolved_at')
+                    ->selectRaw('AVG(EXTRACT(EPOCH FROM (resolved_at - first_reported_at)) / 3600) as avg_hours')
+                    ->value('avg_hours');
+
+                return [
+                    'summary' => [
+                        'total_issues' => $totalIssues,
+                        'open_issues' => $openIssues,
+                        'resolved_issues' => $resolvedIssues,
+                        'avg_resolution_hours' => $avgResolutionHours !== null
+                            ? round((float) $avgResolutionHours, 1)
+                            : null,
+                    ],
+                    'severity_breakdown' => $severityBreakdown,
+                    'status_breakdown' => $statusBreakdown,
+                    'category_breakdown' => $categoryBreakdown,
+                    'report_trend_14d' => $reportTrend,
+                ];
+            }),
         ]);
     }
 }

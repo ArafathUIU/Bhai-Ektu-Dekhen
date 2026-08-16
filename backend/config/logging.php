@@ -20,6 +20,8 @@ return [
 
     'default' => env('LOG_CHANNEL', 'stack'),
 
+    'slow_query_threshold_ms' => (int) env('SLOW_QUERY_THRESHOLD_MS', 500),
+
     /*
     |--------------------------------------------------------------------------
     | Deprecations Log Channel
