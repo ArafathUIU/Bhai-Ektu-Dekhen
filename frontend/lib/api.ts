@@ -1,0 +1,116 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v1';
+
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  status: string;
+  role: { id: number; name: string; slug: string } | null;
+};
+
+export type Category = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+};
+
+export type Report = {
+  id: number;
+  public_id: string;
+  user_id: number;
+  issue_id: number | null;
+  category_id: number | null;
+  description: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  status: string;
+  created_at: string;
+  category: Category | null;
+  media: Media[];
+};
+
+export type Issue = {
+  id: number;
+  public_id: string;
+  category_id: number | null;
+  title: string;
+  description: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  severity: string;
+  status: string;
+  created_at: string;
+  category: Category | null;
+  supports_count?: number;
+};
+
+export type Media = {
+  id: number;
+  type: string;
+  url: string | null;
+  mime_type: string | null;
+};
+
+let token: string | null = null;
+
+export function setToken(t: string | null) {
+  token = t;
+  if (typeof window !== 'undefined') {
+    if (t) localStorage.setItem('bek_token', t);
+    else localStorage.removeItem('bek_token');
+  }
+}
+
+export function getToken(): string | null {
+  if (token) return token;
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('bek_token');
+  }
+  return token;
+}
+
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    ...(options.headers as Record<string, string>),
+  };
+
+  const t = getToken();
+  if (t) headers.Authorization = `Bearer ${t}`;
+
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(err.message ?? 'Request failed');
+  }
+
+  return res.json();
+}
+
+export const api = {
+  register: (data: { name: string; email: string; password: string; password_confirmation: string }) =>
+    request<{ data: { user: User; token: string } }>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  login: (data: { email: string; password: string }) =>
+    request<{ data: { user: User; token: string } }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  logout: () => request('/auth/logout', { method: 'POST' }),
+  profile: () => request<{ data: { user: User } }>('/auth/profile'),
+  reports: () => request<{ data: { reports: { data: Report[] } } }>('/reports'),
+  createReport: (form: FormData) =>
+    request<{ data: { report: Report } }>('/reports', { method: 'POST', body: form }),
+  issues: () => request<{ data: { issues: { data: Issue[] } } }>('/issues'),
+  nearby: (lat: number, lng: number, radius = 500) =>
+    request<{ data: { issues: Issue[] } }>(`/map/nearby?latitude=${lat}&longitude=${lng}&radius=${radius}`),
+};
