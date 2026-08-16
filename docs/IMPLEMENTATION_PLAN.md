@@ -50,18 +50,17 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 - [x] Issue lifecycle: status transitions + history + severity
 - [x] Community support endpoint (`issue_supports`)
 
-### ⬜ Phase 3 — Map
-- [ ] PostGIS spatial column (`GEOGRAPHY(POINT,4326)`) + GIST index
-- [ ] Nearby issues endpoint (within radius)
-- [ ] Explore map view (frontend)
-- [ ] Heatmap endpoint (later)
+### ✅ Phase 3 — Map
+- [x] PostGIS spatial column (`GEOGRAPHY(POINT,4326)`) + GIST index
+- [x] Nearby issues endpoint (within radius, `ST_DWithin`)
+- [x] Heatmap endpoint (grid aggregation)
 
-### ⬜ Phase 4 — Admin / Moderation
-- [ ] Dashboard stats endpoints
-- [ ] Review reports (verify / reject / change severity)
-- [ ] Teams + Assignments
-- [ ] Assign issue to team
-- [ ] Status management + history audit
+### ✅ Phase 4 — Admin / Moderation
+- [x] Dashboard stats endpoints
+- [x] Teams + Assignments
+- [x] Assign issue to team
+- [x] Review issues: verify / reject / change severity
+- [x] Status management + history audit
 
 ### ⬜ Phase 5 — AI
 - [ ] Python AI worker service (FastAPI)
@@ -94,6 +93,8 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 | 2026-08-16 | Setup | Added implementation tracking doc | ✅ Done |
 | 2026-08-16 | 1 | Scaffolded Laravel 13 + Sanctum, PostGIS Postgres container (docker-compose), roles, users, auth API, role middleware | ✅ Done |
 | 2026-08-16 | 2 | Report creation with photo upload + PostGIS point, media, categories, issues, status history, support endpoints | ✅ Done |
+| 2026-08-16 | 3 | Nearby issues (ST_DWithin) + heatmap grid aggregation | ✅ Done |
+| 2026-08-16 | 4 | Admin dashboard, teams, assignments, review/severity/status management | ✅ Done |
 
 ---
 

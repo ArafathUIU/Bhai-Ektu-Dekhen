@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\IssueController;
 use App\Http\Controllers\Api\V1\MapController;
@@ -36,6 +37,15 @@ Route::prefix('v1')->group(function () {
             Route::post('/reports/{report}/create-issue', [IssueController::class, 'createFromReport']);
             Route::patch('/issues/{publicId}/status', [IssueController::class, 'updateStatus']);
             Route::patch('/issues/{publicId}/severity', [IssueController::class, 'updateSeverity']);
+        });
+
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+            Route::get('/admin/teams', [AdminController::class, 'teams']);
+            Route::post('/admin/teams', [AdminController::class, 'storeTeam']);
+            Route::post('/admin/issues/{publicId}/assign', [AdminController::class, 'assign']);
+            Route::get('/admin/assignments', [AdminController::class, 'assignments']);
+            Route::patch('/admin/assignments/{assignment}/status', [AdminController::class, 'updateAssignmentStatus']);
         });
     });
 });
