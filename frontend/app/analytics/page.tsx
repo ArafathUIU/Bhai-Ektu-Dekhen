@@ -1,0 +1,152 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Navbar } from "@/components/Navbar";
+
+type Analytics = {
+  summary: {
+    total_issues: number;
+    open_issues: number;
+    resolved_issues: number;
+    avg_resolution_hours: number | null;
+  };
+  severity_breakdown: Record<string, number>;
+  status_breakdown: Record<string, number>;
+  category_breakdown: {
+    id: number;
+    name: string;
+    slug: string;
+    issues_count: number;
+  }[];
+  report_trend_14d: { date: string; count: number }[];
+};
+
+type Hotspot = {
+  latitude: number;
+  longitude: number;
+  issue_count: number;
+  category_count: number;
+  avg_severity: number;
+};
+
+export default function AnalyticsPage() {
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [hotspots, setHotspots] = useState<Hotspot[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const headers = { Authorization: `Bearer ${localStorage.getItem("bek_token")}` };
+    fetch("/api/v1/intelligence/analytics", { headers })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("Analytics unavailable"))))
+      .then((res) => setAnalytics(res.data))
+      .catch((e) => setError(e.message));
+    fetch("/api/v1/intelligence/hotspots", { headers })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("Hotspots unavailable"))))
+      .then((res) => setHotspots(res.data.hotspots))
+      .catch((e) => setError((prev) => (prev ? `${prev}; ${e.message}` : e.message)));
+  }, []);
+
+  return (
+    <>
+      <Navbar />
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
+        <h1 className="text-2xl font-bold text-gray-900">Intelligence</h1>
+        {error && <p className="mt-4 rounded bg-red-50 p-2 text-sm text-red-700">{error}</p>}
+        {!analytics && !error && <p className="mt-4 text-gray-500">Loading...</p>}
+        {analytics && (
+          <>
+            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <Stat label="Total Issues" value={analytics.summary.total_issues} />
+              <Stat label="Open Issues" value={analytics.summary.open_issues} />
+              <Stat label="Resolved" value={analytics.summary.resolved_issues} />
+              <Stat
+                label="Avg Resolution (h)"
+                value={
+                  analytics.summary.avg_resolution_hours !== null
+                    ? String(analytics.summary.avg_resolution_hours)
+                    : "—"
+                }
+              />
+            </div>
+
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              <Breakdown title="By Status" data={analytics.status_breakdown} />
+              <Breakdown title="By Severity" data={analytics.severity_breakdown} />
+            </div>
+
+            <h2 className="mt-8 text-lg font-semibold text-gray-900">By Category</h2>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {analytics.category_breakdown.map((c) => (
+                <div key={c.id} className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
+                  <p className="font-medium text-gray-700">{c.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {c.issues_count} open issue{c.issues_count === 1 ? "" : "s"}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="mt-8 text-lg font-semibold text-gray-900">Reports — last 14 days</h2>
+            <div className="mt-3 flex h-32 items-end gap-1 rounded-lg border border-gray-200 bg-white p-3">
+              {analytics.report_trend_14d.map((d) => (
+                <div
+                  key={d.date}
+                  className="flex-1 rounded-t bg-teal-500"
+                  title={`${d.date}: ${d.count}`}
+                  style={{ height: `${Math.max(8, (d.count / maxCount(analytics.report_trend_14d)) * 100)}%` }}
+                />
+              ))}
+            </div>
+
+            <h2 className="mt-8 text-lg font-semibold text-gray-900">Hotspots</h2>
+            {hotspots.length === 0 && <p className="mt-3 text-sm text-gray-500">No hotspots detected.</p>}
+            <ul className="mt-3 space-y-2">
+              {hotspots.map((h) => (
+                <li
+                  key={`${h.latitude},${h.longitude}`}
+                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm"
+                >
+                  <span className="text-gray-700">
+                    {h.latitude.toFixed(4)}, {h.longitude.toFixed(4)}
+                  </span>
+                  <span className="text-gray-400">
+                    {h.issue_count} issues · {h.category_count} categories · sev {h.avg_severity}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </main>
+    </>
+  );
+}
+
+function maxCount(trend: { date: string; count: number }[]) {
+  return Math.max(...trend.map((d) => d.count), 1);
+}
+
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
+    </div>
+  );
+}
+
+function Breakdown({ title, data }: { title: string; data: Record<string, number> }) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <p className="text-sm font-semibold text-gray-700">{title}</p>
+      <ul className="mt-2 space-y-1 text-sm">
+        {Object.entries(data).map(([k, v]) => (
+          <li key={k} className="flex justify-between">
+            <span className="text-gray-500">{k}</span>
+            <span className="font-medium text-gray-900">{v}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

@@ -22,9 +22,14 @@ export function Navbar() {
                 My Reports
               </Link>
               {user.role?.slug === "admin" && (
-                <Link href="/admin" className="text-gray-600 hover:text-gray-900">
-                  Admin
-                </Link>
+                <>
+                  <Link href="/admin" className="text-gray-600 hover:text-gray-900">
+                    Admin
+                  </Link>
+                  <Link href="/analytics" className="text-gray-600 hover:text-gray-900">
+                    Analytics
+                  </Link>
+                </>
               )}
               <span className="text-gray-500">{user.name}</span>
               <button onClick={() => logout()} className="text-red-600 hover:text-red-800">
