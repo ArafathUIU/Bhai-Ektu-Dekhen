@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: bek-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bek
+      POSTGRES_PASSWORD: bek_password_2026
+      POSTGRES_DB: bek
+    ports:
+      - "5433:5432"
+    volumes:
+      - bek-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  bek-postgres-data:
