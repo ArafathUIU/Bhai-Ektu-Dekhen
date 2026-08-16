@@ -32,6 +32,7 @@ class AnalyzeResponse(BaseModel):
     status: str
     classification: Optional[ClassificationResult] = None
     severity_score: Optional[float] = None
+    embedding: Optional[list[float]] = None
     embedding_dim: Optional[int] = None
     processing_time_ms: Optional[int] = None
     model_name: str

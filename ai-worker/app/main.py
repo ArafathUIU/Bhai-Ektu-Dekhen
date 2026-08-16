@@ -68,6 +68,7 @@ def analyze(payload: AnalyzeRequest) -> AnalyzeResponse:
             confidence=classification["confidence"],
         ),
         severity_score=severity,
+        embedding=[float(x) for x in embedding],
         embedding_dim=int(embedding.shape[0]),
         processing_time_ms=elapsed_ms,
         model_name=f"{classifier.model_name}|{embedder.model_name}",

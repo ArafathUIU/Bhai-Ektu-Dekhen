@@ -29,7 +29,7 @@ class ImageEmbedder:
     def embed(self, image: Image.Image) -> np.ndarray:
         gray = image.convert("L").resize((64, 64))
         matrix = np.asarray(gray, dtype=np.float32)
-        dct = self._dct2(matrix)
+        dct = self._dct2(matrix).flatten()
         # Skip the DC coefficient; keep the next DIM low-frequency coefficients.
         low = dct[1 : self.DIM + 1]
         norm = np.linalg.norm(low)
