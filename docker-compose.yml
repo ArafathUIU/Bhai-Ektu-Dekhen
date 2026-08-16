@@ -11,6 +11,11 @@ services:
       - "5433:5432"
     volumes:
       - bek-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bek -d bek"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -21,6 +26,88 @@ services:
       - "6380:6379"
     volumes:
       - bek-redis-data:/data
+
+  ai-worker:
+    build: ./ai-worker
+    container_name: bek-ai-worker
+    restart: unless-stopped
+    environment:
+      AI_APP_NAME: bek-ai-worker
+      AI_API_V1_PREFIX: /api/v1
+    ports:
+      - "9000:8000"
+
+  backend:
+    build: ./backend
+    container_name: bek-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      ai-worker:
+        condition: service_started
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: bek
+      DB_USERNAME: bek
+      DB_PASSWORD: bek_password_2026
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_CLIENT: predis
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
+      AI_WORKER_URL: http://ai-worker:8000/api/v1
+      APP_URL: http://localhost:8000
+    volumes:
+      - ./backend/storage/app/public:/var/www/html/storage/app/public
+    ports:
+      - "8000:9000"
+    command: sh -c "php artisan migrate --force --no-interaction && php artisan db:seed --force --no-interaction && php artisan serve --host=0.0.0.0 --port=9000"
+
+  queue-worker:
+    build: ./backend
+    container_name: bek-queue-worker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_DATABASE: bek
+      DB_USERNAME: bek
+      DB_PASSWORD: bek_password_2026
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_CLIENT: predis
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
+      AI_WORKER_URL: http://ai-worker:8000/api/v1
+      APP_URL: http://localhost:8000
+    command: sh -c "mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views && php artisan queue:work redis --sleep=1 --tries=3 --timeout=120"
+
+  frontend:
+    build: ./frontend
+    container_name: bek-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      BACKEND_URL: http://backend:9000
+    ports:
+      - "3000:3000"
 
 volumes:
   bek-postgres-data:
