@@ -6,16 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Jobs\AnalyzeReport;
 use App\Models\Issue;
 use App\Models\Media;
+use App\Models\Notification;
 use App\Models\Report;
+use App\Services\IssueService;
+use App\Services\NotificationService;
 use App\Services\PublicIdGenerator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ReportController extends Controller
 {
-    public function __construct(private readonly PublicIdGenerator $ids)
-    {
+    public function __construct(
+        private readonly PublicIdGenerator $ids,
+        private readonly NotificationService $notifications,
+    ) {
     }
 
     public function store(Request $request): JsonResponse
@@ -92,6 +98,72 @@ class ReportController extends Controller
 
         return response()->json([
             'data' => ['report' => $report],
+        ]);
+    }
+
+    /**
+     * Moderator/admin: verify a report so it becomes a confirmed issue.
+     */
+    public function verify(Request $request, string $publicId): JsonResponse
+    {
+        $report = Report::where('public_id', $publicId)->firstOrFail();
+
+        $validated = $request->validate([
+            'severity' => ['nullable', Rule::in([
+                Issue::SEVERITY_LOW,
+                Issue::SEVERITY_MEDIUM,
+                Issue::SEVERITY_HIGH,
+                Issue::SEVERITY_CRITICAL,
+            ])],
+        ]);
+
+        DB::transaction(function () use ($report, $validated, $request) {
+            $report->update(['status' => Report::STATUS_REPORTED]);
+
+            if (! $report->issue_id) {
+                app(IssueService::class)->createIssueFromReport(
+                    $report,
+                    $validated['severity'] ?? null,
+                );
+            }
+        });
+
+        $this->notifications->notifyReportAuthor(
+            $report->refresh(),
+            Notification::TYPE_REPORT_VERIFIED,
+            'Your report was verified',
+            'A moderator confirmed your report and an issue is being tracked.',
+        );
+
+        return response()->json([
+            'data' => ['report' => $report->refresh()->load(['media', 'category', 'issue'])],
+            'message' => 'Report verified.',
+        ]);
+    }
+
+    /**
+     * Moderator/admin: reject a report as invalid or a duplicate.
+     */
+    public function reject(Request $request, string $publicId): JsonResponse
+    {
+        $report = Report::where('public_id', $publicId)->firstOrFail();
+
+        $validated = $request->validate([
+            'reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $report->update(['status' => Report::STATUS_REJECTED]);
+
+        $this->notifications->notifyReportAuthor(
+            $report,
+            Notification::TYPE_REPORT_REJECTED,
+            'Your report was rejected',
+            $validated['reason'] ?? 'This report could not be verified.',
+        );
+
+        return response()->json([
+            'data' => ['report' => $report->refresh()->load('media')],
+            'message' => 'Report rejected.',
         ]);
     }
 }

@@ -45,6 +45,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/issues/{publicId}/support', [IssueController::class, 'support']);
 
         Route::middleware('role:admin,moderator')->group(function () {
+            Route::post('/reports/{publicId}/verify', [ReportController::class, 'verify']);
+            Route::post('/reports/{publicId}/reject', [ReportController::class, 'reject']);
             Route::post('/reports/{report}/create-issue', [IssueController::class, 'createFromReport']);
             Route::patch('/issues/{publicId}/status', [IssueController::class, 'updateStatus']);
             Route::patch('/issues/{publicId}/severity', [IssueController::class, 'updateSeverity']);
