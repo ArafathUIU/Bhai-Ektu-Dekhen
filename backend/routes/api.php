@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\IssueController;
+use App\Http\Controllers\Api\V1\MapController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,9 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/issues', [IssueController::class, 'index']);
     Route::get('/issues/{publicId}', [IssueController::class, 'show']);
+
+    Route::get('/map/nearby', [MapController::class, 'nearby']);
+    Route::get('/map/heatmap', [MapController::class, 'heatmap']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
