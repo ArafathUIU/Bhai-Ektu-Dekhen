@@ -62,6 +62,15 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 - [x] Review issues: verify / reject / change severity
 - [x] Status management + history audit
 
+### ✅ Frontend (Next.js)
+- [x] Scaffold Next.js 16 + TypeScript + Tailwind
+- [x] Auth pages (login / register), API client + auth context (Sanctum token)
+- [x] Report an Issue page (photo upload + geolocation)
+- [x] My Reports list
+- [x] Explore map (Leaflet + OpenStreetMap)
+- [x] Admin dashboard
+- [x] Next.js rewrites proxy → Laravel API (no CORS in dev)
+
 ### ⬜ Phase 5 — AI
 - [ ] Python AI worker service (FastAPI)
 - [ ] Image classification (category + confidence)
@@ -95,6 +104,7 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 | 2026-08-16 | 2 | Report creation with photo upload + PostGIS point, media, categories, issues, status history, support endpoints | ✅ Done |
 | 2026-08-16 | 3 | Nearby issues (ST_DWithin) + heatmap grid aggregation | ✅ Done |
 | 2026-08-16 | 4 | Admin dashboard, teams, assignments, review/severity/status management | ✅ Done |
+| 2026-08-16 | Frontend | Next.js 16 app: auth, report form, my reports, Leaflet explore map, admin dashboard, API proxy | ✅ Done |
 
 ---
 
