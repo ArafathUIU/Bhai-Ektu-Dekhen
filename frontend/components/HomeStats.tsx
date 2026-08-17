@@ -30,7 +30,7 @@ export function HomeStats() {
   return (
     <div className="mx-auto mt-12 grid max-w-5xl grid-cols-2 gap-4 lg:grid-cols-4">
       {STATS.map((s, i) => (
-        <div key={s.key} className="glass animate-fade-up rounded-2xl p-5 text-center shadow-soft">
+        <div key={s.key} className="card-dark animate-fade-up rounded-2xl p-5 text-center">
           <span className="animate-float inline-block text-2xl" style={{ animationDelay: `${i * 0.4}s` }}>
             {s.icon}
           </span>
@@ -39,7 +39,7 @@ export function HomeStats() {
           >
             {summary ? summary[s.key] : "—"}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-400">{s.label}</p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-teal-50/70">{s.label}</p>
         </div>
       ))}
     </div>

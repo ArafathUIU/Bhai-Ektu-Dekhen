@@ -38,14 +38,14 @@ export function HomeCategories() {
           <Link
             key={c.id}
             href="/explore"
-            className="gradient-border animate-fade-up rounded-2xl p-4 text-center shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+            className="card-dark animate-fade-up p-4 text-center"
             style={{ animationDelay: `${i * 0.08}s` }}
           >
             <span className="animate-float inline-block text-2xl" style={{ animationDelay: `${i * 0.3}s` }}>
               {ICONS[c.slug] ?? "📍"}
             </span>
-            <p className="mt-2 text-sm font-semibold text-slate-800">{c.name}</p>
-            <p className="text-[11px] text-slate-400">{c.slug.replace(/_/g, " ")}</p>
+            <p className="mt-2 text-sm font-semibold text-white">{c.name}</p>
+            <p className="text-[11px] text-teal-50/60">{c.slug.replace(/_/g, " ")}</p>
           </Link>
         ))}
       </div>

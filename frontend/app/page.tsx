@@ -74,16 +74,16 @@ export default function HomePage() {
             {STEPS.map((s, i) => (
               <div
                 key={s.step}
-                className={`gradient-border animate-fade-up d-${i + 1} relative rounded-2xl p-6 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl`}
+                className={`card-dark animate-fade-up d-${i + 1} p-6`}
               >
-                <span className="absolute right-5 top-4 text-4xl font-extrabold text-slate-100">
+                <span className="absolute right-5 top-4 text-4xl font-extrabold text-white/10">
                   {s.step}
                 </span>
                 <span className="animate-float inline-block text-3xl" style={{ animationDelay: `${i * 0.6}s` }}>
                   {s.icon}
                 </span>
-                <h3 className="mt-3 text-base font-semibold text-slate-900">{s.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{s.body}</p>
+                <h3 className="mt-3 text-base font-semibold text-white">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-teal-50/75">{s.body}</p>
               </div>
             ))}
           </div>
