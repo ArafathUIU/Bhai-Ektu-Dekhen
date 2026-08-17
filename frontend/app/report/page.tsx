@@ -2,8 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { api } from "@/lib/api";
+
+const LocationPicker = dynamic(() => import("@/components/LocationPicker").then((m) => m.LocationPicker), {
+  ssr: false,
+  loading: () => <div className="h-56 w-full animate-pulse rounded-lg bg-gray-100" />,
+});
 
 export default function ReportPage() {
   const router = useRouter();
@@ -17,16 +23,21 @@ export default function ReportPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
+    detectLocation();
+  }, []);
+
+  function detectLocation() {
     if ("geolocation" in navigator) {
+      setError("");
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setLat(pos.coords.latitude.toFixed(7));
           setLng(pos.coords.longitude.toFixed(7));
         },
-        () => setError("Could not detect location. Enter coordinates manually."),
+        () => setError("Could not detect location. Tap the map or enter coordinates manually."),
       );
     }
-  }, []);
+  }
 
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -75,6 +86,29 @@ export default function ReportPage() {
               onChange={onFileChange}
               className="mt-2 w-full text-sm text-gray-600"
             />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-gray-700">Location</p>
+              <button
+                type="button"
+                onClick={detectLocation}
+                className="text-xs font-medium text-teal-600 hover:underline"
+              >
+                Use my location
+              </button>
+            </div>
+            <div className="mt-2">
+              <LocationPicker
+                lat={lat ? Number(lat) : null}
+                lng={lng ? Number(lng) : null}
+                onChange={(newLat, newLng) => {
+                  setLat(newLat.toFixed(7));
+                  setLng(newLng.toFixed(7));
+                }}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
