@@ -107,4 +107,26 @@ class AdminApiTest extends TestCase
         ], ['Authorization' => "Bearer {$token}"])
             ->assertStatus(422);
     }
+
+    public function test_assign_notifies_reporters(): void
+    {
+        $reporter = User::factory()->create();
+        $issue = app(IssueService::class)->createIssueFromReport(
+            Report::factory()->create([
+                'user_id' => $reporter->id,
+                'category_id' => IssueCategory::first()->id,
+            ]),
+        );
+        $team = Team::create(['name' => 'Road Crew']);
+        $token = $this->adminToken();
+
+        $this->postJson("/api/v1/admin/issues/{$issue->public_id}/assign", [
+            'team_id' => $team->id,
+        ], ['Authorization' => "Bearer {$token}"])->assertCreated();
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $reporter->id,
+            'type' => \App\Models\Notification::TYPE_ISSUE_ASSIGNED,
+        ]);
+    }
 }

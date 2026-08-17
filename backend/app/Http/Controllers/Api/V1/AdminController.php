@@ -114,6 +114,13 @@ class AdminController extends Controller
             return $assignment;
         });
 
+        $this->notifications->notifyIssueReporters(
+            $issue,
+            \App\Models\Notification::TYPE_ISSUE_ASSIGNED,
+            "Issue {$issue->public_id} assigned to a team",
+            "Your report was assigned to {$assignment->team->name} for action.",
+        );
+
         return response()->json([
             'data' => ['assignment' => $assignment->load('team')],
             'message' => 'Issue assigned to team.',
