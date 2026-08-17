@@ -204,4 +204,16 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ status }),
     }),
+  dashboard: () =>
+    request<{
+      data: {
+        total_issues: number;
+        open_issues: number;
+        resolved_issues: number;
+        pending_reports: number;
+        by_status: Record<string, number>;
+        by_severity: Record<string, number>;
+        recent_issues: { public_id: string; title: string; status: string; severity: string }[];
+      };
+    }>('/admin/dashboard'),
 };

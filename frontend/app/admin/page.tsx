@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { api } from "@/lib/api";
 
 type Dashboard = {
   total_issues: number;
@@ -18,10 +20,8 @@ export default function AdminPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/v1/admin/dashboard", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("bek_token")}` },
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("Forbidden"))))
+    api
+      .dashboard()
       .then((res) => setDash(res.data))
       .catch((e) => setError(e.message));
   }, []);
@@ -39,7 +39,30 @@ export default function AdminPage() {
               <Stat label="Total Issues" value={dash.total_issues} />
               <Stat label="Open Issues" value={dash.open_issues} />
               <Stat label="Resolved" value={dash.resolved_issues} />
-              <Stat label="Pending Reports" value={dash.pending_reports} />
+              <Link href="/moderation" className="rounded-lg border border-gray-200 bg-white p-4 hover:border-teal-400">
+                <p className="text-xs uppercase tracking-wide text-gray-400">Pending Reports</p>
+                <p className="mt-1 text-2xl font-bold text-gray-900">{dash.pending_reports}</p>
+              </Link>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/moderation"
+                className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500"
+              >
+                Open Moderation Queue
+              </Link>
+              <Link
+                href="/assignments"
+                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+              >
+                Manage Assignments
+              </Link>
+              <Link
+                href="/analytics"
+                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Analytics
+              </Link>
             </div>
             <div className="mt-6 grid gap-6 sm:grid-cols-2">
               <Breakdown title="By Status" data={dash.by_status} />
@@ -48,17 +71,18 @@ export default function AdminPage() {
             <h2 className="mt-8 text-lg font-semibold text-gray-900">Recent Issues</h2>
             <ul className="mt-3 space-y-2">
               {dash.recent_issues.map((issue) => (
-                <li
-                  key={issue.public_id}
-                  className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm"
-                >
-                  <span>
-                    <span className="font-mono text-gray-500">{issue.public_id}</span>{" "}
-                    {issue.title}
-                  </span>
-                  <span className="text-gray-400">
-                    {issue.status} · {issue.severity}
-                  </span>
+                <li key={issue.public_id}>
+                  <Link
+                    href={`/issues/${issue.public_id}`}
+                    className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm hover:border-teal-400"
+                  >
+                    <span>
+                      <span className="font-mono text-gray-500">{issue.public_id}</span> {issue.title}
+                    </span>
+                    <span className="text-gray-400">
+                      {issue.status} · {issue.severity}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
