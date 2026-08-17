@@ -73,4 +73,14 @@ class Issue extends Model
     {
         return $this->hasMany(Media::class, 'mediable_id')->where('mediable_type', self::class);
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function aiAnalyses(): HasMany
+    {
+        return $this->hasMany(AiAnalysis::class);
+    }
 }

@@ -25,6 +25,14 @@ export function HomeCategories() {
 
   if (categories.length === 0) return null;
 
+  // Bengali category name mapping
+  const bengaliNames: Record<string, string> = {
+    road_damage: 'কাটি ধ্বংস',
+    drainage: 'নালা',
+    street_light: 'স jalan',
+    garbage: 'কচरा',
+  };
+
   return (
     <section className="mx-auto mt-16 max-w-5xl">
       <h2 className="text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
@@ -44,7 +52,9 @@ export function HomeCategories() {
             <span className="animate-float inline-block text-2xl" style={{ animationDelay: `${i * 0.3}s` }}>
               {ICONS[c.slug] ?? "📍"}
             </span>
-            <p className="mt-2 text-sm font-semibold text-white">{c.name}</p>
+            <p className="mt-2 text-sm font-semibold text-white">
+              {bengaliNames[c.slug] ?? c.name}
+            </p>
             <p className="text-[11px] text-teal-50/60">{c.slug.replace(/_/g, " ")}</p>
           </Link>
         ))}

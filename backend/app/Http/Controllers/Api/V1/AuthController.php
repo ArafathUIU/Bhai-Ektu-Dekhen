@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Issue;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -88,12 +89,17 @@ class AuthController extends Controller
     {
         $user = $request->user()->load('role');
 
+        $resolvedIssueCount = Issue::whereHas('reports', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->where('status', Issue::STATUS_RESOLVED)->distinct()->count();
+
         return response()->json([
             'data' => [
                 'user' => $user,
                 'stats' => [
                     'reports_submitted' => $user->reports()->count(),
                     'issues_supported' => $user->supports()->count(),
+                    'issues_resolved' => $resolvedIssueCount,
                     'member_since' => $user->created_at->toDateString(),
                 ],
             ],

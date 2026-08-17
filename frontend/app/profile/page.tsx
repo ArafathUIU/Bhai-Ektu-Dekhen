@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { PageHeader } from "@/components/ui";
 import { api, type User } from "@/lib/api";
 
-type Stats = { reports_submitted: number; issues_supported: number; member_since: string };
+type Stats = { reports_submitted: number; issues_supported: number; issues_resolved: number; member_since: string };
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -72,6 +72,10 @@ export default function ProfilePage() {
             <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-3 text-center">
               <dt className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Member since</dt>
               <dd className="mt-1 text-lg font-bold text-emerald-800">{stats?.member_since ?? "—"}</dd>
+            </div>
+            <div className="rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 p-3 text-center">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-violet-700">Issues resolved</dt>
+              <dd className="mt-1 text-2xl font-extrabold text-violet-800">{stats?.issues_resolved ?? 0}</dd>
             </div>
           </dl>
           <div className="mt-6 flex flex-wrap gap-3">

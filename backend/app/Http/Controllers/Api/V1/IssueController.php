@@ -48,7 +48,7 @@ class IssueController extends Controller
     public function show(string $publicId): JsonResponse
     {
         $issue = Issue::where('public_id', $publicId)
-            ->with(['category', 'reports.media', 'reports.user', 'statusHistory.changedBy', 'supports'])
+            ->with(['category', 'reports.media', 'reports.user', 'statusHistory.changedBy', 'supports', 'aiAnalyses'])
             ->firstOrFail();
 
         return response()->json([
@@ -145,6 +145,34 @@ class IssueController extends Controller
         return response()->json([
             'data' => ['support_count' => $issue->supports()->count()],
             'message' => 'Issue supported.',
+        ]);
+    }
+
+    public function storeComment(Request $request, string $publicId): JsonResponse
+    {
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $issue = Issue::where('public_id', $publicId)->firstOrFail();
+
+        $comment = $issue->comments()->create([
+            'user_id' => $request->user()->id,
+            'body' => $validated['body'],
+        ]);
+
+        return response()->json([
+            'data' => ['comment' => $comment->load('user')],
+            'message' => 'Comment posted.',
+        ], 201);
+    }
+
+    public function indexComments(string $publicId): JsonResponse
+    {
+        $issue = Issue::where('public_id', $publicId)->with('comments.user')->firstOrFail();
+
+        return response()->json([
+            'data' => ['comments' => $issue->comments()->latest('created_at')->get()->load('user')],
         ]);
     }
 }

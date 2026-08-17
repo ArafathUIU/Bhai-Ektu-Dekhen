@@ -74,6 +74,15 @@ export type EmergencyResult = {
   source: "overpass" | "fallback";
 };
 
+export type Comment = {
+  id: number;
+  issue_id: number;
+  user_id: number;
+  body: string;
+  created_at: string;
+  user: { id: number; name: string };
+};
+
 export type StatusHistoryEntry = {
   id: number;
   from_status: string | null;
@@ -98,6 +107,7 @@ export type IssueDetail = Issue & {
   reports: (Report & { user: { name: string } | null })[];
   statusHistory: StatusHistoryEntry[];
   supports: { user_id: number }[];
+  aiAnalyses: AiAnalysis[];
 };
 
 export type NotificationItem = {
@@ -197,6 +207,10 @@ export const api = {
   categories: () => request<{ data: { categories: Category[] } }>('/categories'),
   issue: (publicId: string) =>
     request<{ data: { issue: IssueDetail } }>(`/issues/${publicId}`),
+  issueComments: (publicId: string) =>
+    request<{ data: { comments: Comment[] } }>(
+      `/issues/${publicId}/comments`,
+    ),
   supportIssue: (publicId: string) =>
     request<{ data: { support_count: number } }>(`/issues/${publicId}/support`, { method: 'POST' }),
   nearby: (lat: number, lng: number, radius = 500) =>

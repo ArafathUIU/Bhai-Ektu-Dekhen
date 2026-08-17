@@ -49,6 +49,9 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/issues/{publicId}/support', [IssueController::class, 'support']);
 
+        Route::post('/issues/{publicId}/comments', [IssueController::class, 'storeComment']);
+        Route::get('/issues/{publicId}/comments', [IssueController::class, 'indexComments']);
+
         Route::middleware('role:admin,moderator')->group(function () {
             Route::post('/reports/{publicId}/verify', [ReportController::class, 'verify']);
             Route::post('/reports/{publicId}/reject', [ReportController::class, 'reject']);
