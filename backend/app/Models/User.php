@@ -34,6 +34,11 @@ public function reports(): HasMany
         return $this->hasMany(Report::class);
     }
 
+    public function supports(): HasMany
+    {
+        return $this->hasMany(IssueSupport::class);
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);

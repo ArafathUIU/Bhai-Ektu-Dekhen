@@ -92,6 +92,18 @@ export type NotificationItem = {
   data: Record<string, unknown> | null;
 };
 
+export type Assignment = {
+  id: number;
+  issue: Issue & { public_id: string };
+  team: { id: number; name: string } | null;
+  assigned_by: { id: number; name: string } | null;
+  status: string;
+  priority: string;
+  deadline: string | null;
+  assigned_at: string;
+  created_at: string;
+};
+
 let token: string | null = null;
 
 export function setToken(t: string | null) {
@@ -145,7 +157,13 @@ export const api = {
       body: JSON.stringify(data),
     }),
   logout: () => request('/auth/logout', { method: 'POST' }),
-  profile: () => request<{ data: { user: User } }>('/auth/profile'),
+  profile: () =>
+    request<{
+      data: {
+        user: User;
+        stats: { reports_submitted: number; issues_supported: number; member_since: string };
+      };
+    }>('/auth/profile'),
   reports: () => request<{ data: { reports: { data: Report[] } } }>('/reports'),
   createReport: (form: FormData) =>
     request<{ data: { report: Report } }>('/reports', { method: 'POST', body: form }),
@@ -178,5 +196,12 @@ export const api = {
     request<{ data: { report: Report } }>(`/reports/${publicId}/reject`, {
       method: 'POST',
       body: JSON.stringify({ reason }),
+    }),
+  adminAssignments: () =>
+    request<{ data: { assignments: { data: Assignment[] } } }>('/admin/assignments'),
+  updateAssignmentStatus: (id: number, status: string) =>
+    request<{ data: { assignment: Assignment } }>(`/admin/assignments/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
     }),
 };

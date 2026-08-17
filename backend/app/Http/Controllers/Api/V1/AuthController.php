@@ -86,9 +86,16 @@ class AuthController extends Controller
 
     public function profile(Request $request): JsonResponse
     {
+        $user = $request->user()->load('role');
+
         return response()->json([
             'data' => [
-                'user' => $request->user()->load('role'),
+                'user' => $user,
+                'stats' => [
+                    'reports_submitted' => $user->reports()->count(),
+                    'issues_supported' => $user->supports()->count(),
+                    'member_since' => $user->created_at->toDateString(),
+                ],
             ],
         ]);
     }

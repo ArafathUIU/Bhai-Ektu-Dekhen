@@ -28,6 +28,9 @@ export function Navbar() {
                   <Link href="/admin" className="text-gray-600 hover:text-gray-900">
                     Admin
                   </Link>
+                  <Link href="/assignments" className="text-gray-600 hover:text-gray-900">
+                    Assignments
+                  </Link>
                   <Link href="/moderation" className="text-gray-600 hover:text-gray-900">
                     Moderation
                   </Link>
@@ -36,7 +39,9 @@ export function Navbar() {
                   </Link>
                 </>
               )}
-              <span className="text-gray-500">{user.name}</span>
+              <Link href="/profile" className="text-gray-500 hover:text-gray-900">
+                {user.name}
+              </Link>
               <button onClick={() => logout()} className="text-red-600 hover:text-red-800">
                 Logout
               </button>

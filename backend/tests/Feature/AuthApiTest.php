@@ -78,4 +78,16 @@ class AuthApiTest extends TestCase
     {
         $this->getJson('/api/v1/auth/profile')->assertStatus(401);
     }
+
+    public function test_profile_returns_user_stats(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        \App\Models\Report::factory()->count(2)->create(['user_id' => $user->id]);
+
+        $this->getJson('/api/v1/auth/profile', ['Authorization' => "Bearer {$token}"])
+            ->assertOk()
+            ->assertJsonPath('data.stats.reports_submitted', 2);
+    }
 }
