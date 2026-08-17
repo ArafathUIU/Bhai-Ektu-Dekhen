@@ -23,31 +23,53 @@ export function Logo({ size = 36 }: { size?: number }) {
         </linearGradient>
       </defs>
 
-      <path
-        d="M24 3.5C15.4 3.5 8.5 10.2 8.5 18.6 8.5 26.9 24 44.5 24 44.5s15.5-17.6 15.5-25.9C39.5 10.2 32.6 3.5 24 3.5z"
-        fill="url(#bek-logo-grad)"
-      />
-
-      <path
-        d="M13.5 11.5c3.2-1.9 6.8-2.9 10.5-2.9s7.3 1 10.5 2.9"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-
-      <g className="logo-eye">
+      <g className="logo-bounce">
         <path
-          d="M24 14.5c-6.6 0-11 5.1-11.6 6.1.6 1 5 6.1 11.6 6.1s11-5.1 11.6-6.1c-.6-1-5-6.1-11.6-6.1z"
+          d="M24 3.5C15.4 3.5 8.5 10.2 8.5 18.6 8.5 26.9 24 44.5 24 44.5s15.5-17.6 15.5-25.9C39.5 10.2 32.6 3.5 24 3.5z"
+          fill="url(#bek-logo-grad)"
+        />
+
+        <path
+          d="M15.5 10.5c-1.9 2.1-2.9 4.8-2.9 7.8"
           stroke="white"
-          strokeWidth="2"
-          strokeLinejoin="round"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          opacity="0.55"
+        />
+
+        <circle className="logo-blush" cx="16" cy="23.5" r="2.7" fill="#fca5a5" opacity="0.9" />
+        <circle className="logo-blush" cx="32" cy="23.5" r="2.7" fill="#fca5a5" opacity="0.9" />
+
+        <path
+          d="M18.5 25c1.6 2.4 5.4 2.4 7 0"
+          stroke="white"
+          strokeWidth="2.3"
+          strokeLinecap="round"
         />
       </g>
 
-      <g className="logo-pupil">
-        <circle cx="24" cy="21" r="3.1" fill="white" />
-        <circle cx="25.1" cy="19.9" r="0.9" fill="#0d9488" />
+      <g className="logo-wave">
+        <path
+          d="M31 22c1.4-0.4 2.6-1.2 3.6-2.3"
+          stroke="#2563eb"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+        />
+        <circle cx="36" cy="17.5" r="2.4" fill="white" />
+        <path
+          d="M37 13.5c0.9 1.1 1.5 2.4 1.8 3.8"
+          stroke="#2563eb"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.45"
+        />
+        <path
+          d="M39.2 16.2c0.4 1.5 0.5 3 0.4 4.5"
+          stroke="#2563eb"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.3"
+        />
       </g>
     </svg>
   );

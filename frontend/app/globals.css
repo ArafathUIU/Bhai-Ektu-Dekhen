@@ -303,20 +303,6 @@ body {
   }
 }
 
-@keyframes blink {
-  0%,
-  88%,
-  100% {
-    transform: scaleY(1);
-  }
-  92% {
-    transform: scaleY(0.08);
-  }
-  96% {
-    transform: scaleY(1);
-  }
-}
-
 @keyframes pulse-soft {
   0%,
   100% {
@@ -387,17 +373,42 @@ body {
   animation: gradient-x 6s ease infinite;
 }
 
-/* ── Logo ────────────────────────────────────────────────────────── */
-.logo-eye {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: blink 5s ease-in-out infinite;
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(14deg);
+  }
+  40% {
+    transform: rotate(-7deg);
+  }
+  60% {
+    transform: rotate(9deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
 }
 
-.logo-pupil {
+/* ── Logo ────────────────────────────────────────────────────────── */
+.logo-wave {
+  transform-box: fill-box;
+  transform-origin: 2px 8px;
+  animation: wave 2.6s ease-in-out infinite;
+}
+
+.logo-blush {
   transform-box: fill-box;
   transform-origin: center;
-  animation: pulse-soft 2.6s ease-in-out infinite;
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.logo-bounce {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: float-y 4.5s ease-in-out infinite;
 }
 
 /* ── Button shine sweep ──────────────────────────────────────────── */
