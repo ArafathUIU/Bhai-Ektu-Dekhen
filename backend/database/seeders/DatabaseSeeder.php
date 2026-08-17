@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(IssueCategorySeeder::class);
         $this->call(TeamSeeder::class);
+        $this->call(DemoDataSeeder::class);
 
         \App\Models\User::firstOrCreate(
             ['email' => 'test@example.com'],
