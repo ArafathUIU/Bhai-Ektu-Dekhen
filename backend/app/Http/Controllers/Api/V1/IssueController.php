@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Issue;
+use App\Models\IssueCategory;
 use App\Models\Report;
 use App\Services\IssueService;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +15,13 @@ class IssueController extends Controller
 {
     public function __construct(private readonly IssueService $issues)
     {
+    }
+
+    public function categories(): JsonResponse
+    {
+        return response()->json([
+            'data' => ['categories' => IssueCategory::orderBy('name')->get()],
+        ]);
     }
 
     public function index(Request $request): JsonResponse

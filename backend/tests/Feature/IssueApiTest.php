@@ -43,6 +43,30 @@ class IssueApiTest extends TestCase
         $this->getJson('/api/v1/issues')->assertOk()->assertJsonCount(2, 'data.issues.data');
     }
 
+    public function test_issue_index_filters_by_category_and_severity(): void
+    {
+        $road = IssueCategory::where('slug', 'road_damage')->first();
+        $other = IssueCategory::where('slug', 'garbage')->first();
+
+        app(IssueService::class)->createIssueFromReport(
+            \App\Models\Report::factory()->create(['category_id' => $road->id]),
+        );
+        app(IssueService::class)->createIssueFromReport(
+            \App\Models\Report::factory()->create(['category_id' => $other->id]),
+        );
+
+        $this->getJson('/api/v1/issues?category=road_damage')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.issues.data');
+    }
+
+    public function test_categories_endpoint_lists_seeded_categories(): void
+    {
+        $this->getJson('/api/v1/categories')
+            ->assertOk()
+            ->assertJsonCount(4, 'data.categories');
+    }
+
     public function test_issue_show_by_public_id(): void
     {
         $issue = $this->createIssue();

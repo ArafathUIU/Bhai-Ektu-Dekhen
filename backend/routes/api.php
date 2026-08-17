@@ -18,6 +18,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/issues', [IssueController::class, 'index'])->middleware('throttle:api');
     Route::get('/issues/{publicId}', [IssueController::class, 'show'])->middleware('throttle:api');
+    Route::get('/categories', [IssueController::class, 'categories'])->middleware('throttle:api');
 
     Route::get('/map/nearby', [MapController::class, 'nearby'])->middleware('throttle:api');
     Route::get('/map/heatmap', [MapController::class, 'heatmap'])->middleware('throttle:api');

@@ -149,7 +149,13 @@ export const api = {
   reports: () => request<{ data: { reports: { data: Report[] } } }>('/reports'),
   createReport: (form: FormData) =>
     request<{ data: { report: Report } }>('/reports', { method: 'POST', body: form }),
-  issues: () => request<{ data: { issues: { data: Issue[] } } }>('/issues'),
+  issues: (filters?: { category?: string; status?: string; severity?: string }) =>
+    request<{ data: { issues: { data: Issue[] } } }>(
+      `/issues?${new URLSearchParams(
+        Object.fromEntries(Object.entries(filters ?? {}).filter(([, v]) => v)),
+      ).toString()}`,
+    ),
+  categories: () => request<{ data: { categories: Category[] } }>('/categories'),
   issue: (publicId: string) =>
     request<{ data: { issue: IssueDetail } }>(`/issues/${publicId}`),
   supportIssue: (publicId: string) =>

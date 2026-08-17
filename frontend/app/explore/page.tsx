@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
-import { api, type Issue } from "@/lib/api";
+import { api, type Category, type Issue } from "@/lib/api";
 
 const IssueMap = dynamic(() => import("@/components/IssueMap").then((m) => m.IssueMap), {
   ssr: false,
@@ -18,23 +18,68 @@ const SEVERITY_STYLES: Record<string, string> = {
   CRITICAL: "bg-red-100 text-red-800",
 };
 
+const SEVERITY_OPTIONS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+const STATUS_OPTIONS = ["REPORTED", "UNDER_REVIEW", "VERIFIED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "REOPENED"];
+
+const selectClass =
+  "rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-700 focus:border-teal-500 focus:outline-none";
+
 export default function ExplorePage() {
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("");
+  const [severity, setSeverity] = useState("");
 
   useEffect(() => {
+    api.categories().then((res) => setCategories(res.data.categories)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
     api
-      .issues()
+      .issues({ category, status, severity })
       .then((res) => setIssues(res.data.issues.data))
       .finally(() => setLoading(false));
-  }, []);
+  }, [category, status, severity]);
 
   return (
     <>
       <Navbar />
       <main className="flex flex-1 flex-col px-4 py-6">
-        <h1 className="text-2xl font-bold text-gray-900">Explore Issues</h1>
-        <p className="mt-1 text-sm text-gray-500">{issues.length} open issues</p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold text-gray-900">Explore Issues</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className={selectClass}>
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className={selectClass}>
+              <option value="">All statuses</option>
+              {STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s.replace(/_/g, " ")}
+                </option>
+              ))}
+            </select>
+            <select value={severity} onChange={(e) => setSeverity(e.target.value)} className={selectClass}>
+              <option value="">All severities</option>
+              {SEVERITY_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <p className="mt-1 text-sm text-gray-500">
+          {loading ? "Loading..." : `${issues.length} issue${issues.length === 1 ? "" : "s"}`}
+        </p>
         <div className="mt-4 h-[60vh] w-full overflow-hidden rounded-lg border border-gray-200">
           {!loading && <IssueMap issues={issues} />}
         </div>
