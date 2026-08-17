@@ -56,6 +56,24 @@ export type Media = {
   mime_type: string | null;
 };
 
+export type EmergencyStation = {
+  name: string;
+  address: string | null;
+  phone: string | null;
+  latitude: number;
+  longitude: number;
+  distance_km: number;
+};
+
+export type EmergencyNumbers = { service: string; number: string };
+
+export type EmergencyResult = {
+  police_stations: EmergencyStation[];
+  fire_stations: EmergencyStation[];
+  emergency_numbers: EmergencyNumbers[];
+  source: "overpass" | "fallback";
+};
+
 export type StatusHistoryEntry = {
   id: number;
   from_status: string | null;
@@ -183,6 +201,10 @@ export const api = {
     request<{ data: { support_count: number } }>(`/issues/${publicId}/support`, { method: 'POST' }),
   nearby: (lat: number, lng: number, radius = 500) =>
     request<{ data: { issues: Issue[] } }>(`/map/nearby?latitude=${lat}&longitude=${lng}&radius=${radius}`),
+  emergencyNearby: (lat: number, lng: number, radius = 10000) =>
+    request<{ data: EmergencyResult }>(
+      `/emergency/nearby?lat=${lat}&lng=${lng}&radius=${radius}`,
+    ),
   notifications: () =>
     request<{ data: { notifications: { data: NotificationItem[] }; unread_count: number } }>('/notifications'),
   unreadCount: () =>

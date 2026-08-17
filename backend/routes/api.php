@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\EmergencyServiceController;
 use App\Http\Controllers\Api\V1\IntelligenceController;
 use App\Http\Controllers\Api\V1\IssueController;
 use App\Http\Controllers\Api\V1\MapController;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('/summary', [PublicController::class, 'summary'])->middleware('throttle:api');
+    Route::get('/emergency/nearby', [EmergencyServiceController::class, 'nearby'])->middleware('throttle:api');
     Route::prefix('auth')->middleware('throttle:auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);

@@ -27,6 +27,9 @@ export function Navbar() {
           <Link href="/explore" className={NAV_LINK}>
             Explore
           </Link>
+          <Link href="/emergency" className="nav-link rounded-lg px-3 py-1.5 text-sm font-semibold text-rose-600 transition-colors hover:bg-white/70 hover:text-rose-700">
+            🚨 Emergency
+          </Link>
           {user ? (
             <>
               <Link href="/my-reports" className={NAV_LINK}>
