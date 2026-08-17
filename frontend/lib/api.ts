@@ -31,6 +31,7 @@ export type Report = {
   media: Media[];
   analyses?: AiAnalysis[];
   user?: { id: number; name: string } | null;
+  issue?: { id: number; public_id: string } | null;
 };
 
 export type Issue = {

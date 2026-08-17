@@ -81,4 +81,17 @@ class ReportApiTest extends TestCase
             ->assertOk()
             ->assertJsonCount(3, 'data.reports.data');
     }
+
+    public function test_reports_include_linked_issue_public_id(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('auth-token')->plainTextToken;
+        $report = Report::factory()->create(['user_id' => $user->id]);
+
+        $issue = app(\App\Services\IssueService::class)->createIssueFromReport($report);
+
+        $this->getJson('/api/v1/reports', ['Authorization' => "Bearer {$token}"])
+            ->assertOk()
+            ->assertJsonPath('data.reports.data.0.issue.public_id', $issue->public_id);
+    }
 }

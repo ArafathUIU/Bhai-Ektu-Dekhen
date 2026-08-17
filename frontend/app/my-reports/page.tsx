@@ -55,9 +55,9 @@ export default function MyReportsPage() {
                 {report.category?.name ?? "Unclassified"} ·{" "}
                 {new Date(report.created_at).toLocaleString()}
               </p>
-              {report.issue_id && (
+              {report.issue && (
                 <Link
-                  href={`/issues/${report.issue_id}`}
+                  href={`/issues/${report.issue.public_id}`}
                   className="mt-2 inline-block text-xs font-medium text-teal-600 hover:underline"
                 >
                   View linked issue →
