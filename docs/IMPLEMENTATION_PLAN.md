@@ -113,6 +113,8 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 | 2026-08-17 | 6 | Priority scoring service, hotspot grid clustering, analytics + priorities endpoints, admin intelligence API | ✅ Done |
 | 2026-08-17 | 7 | Redis caching + rate limiting + slow-query logging; 47 backend tests + 7 AI worker tests; Docker full stack + CI/CD | ✅ Done |
 | 2026-08-17 | 7 | Notifications (status/assignment/duplicate/moderation), Scramble OpenAPI docs + Postman collection, admin moderation queue frontend, scheduler + demo seeder | ✅ Done |
+| 2026-08-17 | 7 | Explore map filters (category/status/severity), profile page with stats, admin assignments tracker, map location picker on report form | ✅ Done |
+| 2026-08-17 | 7 | Frontend Vitest suite, AI duplicate-detection feature tests, assignment-notification coverage (59 backend + 9 AI + 9 frontend tests) | ✅ Done |
 
 ---
 
