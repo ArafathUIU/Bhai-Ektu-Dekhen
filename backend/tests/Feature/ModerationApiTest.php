@@ -99,4 +99,43 @@ class ModerationApiTest extends TestCase
             'Authorization' => "Bearer {$token}",
         ])->assertForbidden();
     }
+
+    public function test_moderation_queue_lists_pending_reports(): void
+    {
+        [$reporter] = $this->reporterWithToken();
+        $this->createProcessingReport($reporter->id);
+        $this->createProcessingReport($reporter->id);
+        $admin = $this->adminToken();
+
+        $response = $this->getJson('/api/v1/admin/moderation', [
+            'Authorization' => "Bearer {$admin}",
+        ]);
+
+        $response->assertOk()
+            ->assertJsonCount(2, 'data.reports.data');
+    }
+
+    public function test_moderation_queue_excludes_resolved_reports(): void
+    {
+        [$reporter] = $this->reporterWithToken();
+        $this->createProcessingReport($reporter->id);
+        $rejected = $this->createProcessingReport($reporter->id);
+        $rejected->update(['status' => Report::STATUS_REJECTED]);
+        $admin = $this->adminToken();
+
+        $this->getJson('/api/v1/admin/moderation', [
+            'Authorization' => "Bearer {$admin}",
+        ])
+            ->assertOk()
+            ->assertJsonCount(1, 'data.reports.data');
+    }
+
+    public function test_moderation_queue_requires_admin(): void
+    {
+        [, $token] = $this->reporterWithToken();
+
+        $this->getJson('/api/v1/admin/moderation', [
+            'Authorization' => "Bearer {$token}",
+        ])->assertForbidden();
+    }
 }
