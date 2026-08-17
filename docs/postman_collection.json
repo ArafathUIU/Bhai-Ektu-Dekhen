@@ -1,0 +1,69 @@
+{
+  "info": {
+    "name": "Bhai Ektu Dekhen API",
+    "description": "Civic issue reporting and tracking platform API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        { "name": "Register", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"New Citizen\",\n  \"email\": \"new@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "register"] } } },
+        { "name": "Login", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"email\": \"citizen@bek.local\",\n  \"password\": \"secret123\"\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "login"] } } },
+        { "name": "Profile", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/auth/profile", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "profile"] } } },
+        { "name": "Logout", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/auth/logout", "host": ["{{baseUrl}}"], "path": ["api", "v1", "auth", "logout"] } } }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        { "name": "List my reports", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/reports", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reports"] } } },
+        { "name": "Create report", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "formdata", "formdata": [ { "key": "category_id", "value": "1" }, { "key": "latitude", "value": "24.75" }, { "key": "longitude", "value": "90.40" }, { "key": "description", "value": "Boro pothole near the bus stand" }, { "key": "photo", "type": "file", "src": "/path/to/photo.jpg" } ] }, "url": { "raw": "{{baseUrl}}/api/v1/reports", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reports"] } } }
+      ]
+    },
+    {
+      "name": "Issues",
+      "item": [
+        { "name": "List issues", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/issues", "host": ["{{baseUrl}}"], "path": ["api", "v1", "issues"] } } },
+        { "name": "Issue detail", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/issues/BEK-00005", "host": ["{{baseUrl}}"], "path": ["api", "v1", "issues", "BEK-00005"] } } },
+        { "name": "Support issue", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/issues/BEK-00005/support", "host": ["{{baseUrl}}"], "path": ["api", "v1", "issues", "BEK-00005", "support"] } } },
+        { "name": "Update status (admin)", "request": { "method": "PATCH", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"reason\": \"Team dispatched\"\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/issues/BEK-00005/status", "host": ["{{baseUrl}}"], "path": ["api", "v1", "issues", "BEK-00005", "status"] } } }
+      ]
+    },
+    {
+      "name": "Map",
+      "item": [
+        { "name": "Nearby", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/map/nearby?latitude=24.75&longitude=90.40&radius=500", "host": ["{{baseUrl}}"], "path": ["api", "v1", "map", "nearby"] } } },
+        { "name": "Heatmap", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/map/heatmap?bbox=90.0,24.0,91.0,25.0&cell_size=0.01", "host": ["{{baseUrl}}"], "path": ["api", "v1", "map", "heatmap"] } } }
+      ]
+    },
+    {
+      "name": "Intelligence",
+      "item": [
+        { "name": "Hotspots", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/intelligence/hotspots", "host": ["{{baseUrl}}"], "path": ["api", "v1", "intelligence", "hotspots"] } } },
+        { "name": "Analytics", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": { "raw": "{{baseUrl}}/api/v1/intelligence/analytics", "host": ["{{baseUrl}}"], "path": ["api", "v1", "intelligence", "analytics"] } } },
+        { "name": "Priorities (admin)", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/intelligence/priorities", "host": ["{{baseUrl}}"], "path": ["api", "v1", "intelligence", "priorities"] } } }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        { "name": "List", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/notifications", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications"] } } },
+        { "name": "Unread count", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "unread-count"] } } },
+        { "name": "Mark all read", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "notifications", "read-all"] } } }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        { "name": "Dashboard", "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "v1", "admin", "dashboard"] } } },
+        { "name": "Verify report", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{baseUrl}}/api/v1/reports/BEK-00010/verify", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reports", "BEK-00010", "verify"] } } },
+        { "name": "Reject report", "request": { "method": "POST", "header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Duplicate of existing issue\"\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/reports/BEK-00010/reject", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reports", "BEK-00010", "reject"] } } }
+      ]
+    }
+  ]
+}
