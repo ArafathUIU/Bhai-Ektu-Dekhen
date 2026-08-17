@@ -35,3 +35,4 @@ seed:
 test:
 	cd backend && php artisan test
 	cd ai-worker && python -m pytest -q
+	cd frontend && npm run test
