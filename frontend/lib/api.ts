@@ -138,6 +138,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
 
   if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error("Too many requests. Please wait a moment and try again.");
+    }
     const err = await res.json().catch(() => ({ message: 'Request failed' }));
     throw new Error(err.message ?? 'Request failed');
   }

@@ -42,6 +42,19 @@ describe("api error handling", () => {
     );
   });
 
+  it("returns a friendly message when rate limited (429)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 429, json: async () => ({ message: "Too Many Attempts." }) }),
+    );
+
+    const { api } = await import("@/lib/api");
+
+    await expect(api.login({ email: "a@b.com", password: "x" })).rejects.toThrow(
+      /Too many requests/,
+    );
+  });
+
   it("includes the bearer token in authenticated requests", async () => {
     setToken("bearer-token");
     const fetchMock = vi
