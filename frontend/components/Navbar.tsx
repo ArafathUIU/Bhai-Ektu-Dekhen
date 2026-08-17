@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -21,6 +22,7 @@ export function Navbar() {
               <Link href="/my-reports" className="text-gray-600 hover:text-gray-900">
                 My Reports
               </Link>
+              <NotificationBell />
               {user.role?.slug === "admin" && (
                 <>
                   <Link href="/admin" className="text-gray-600 hover:text-gray-900">
