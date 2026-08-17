@@ -71,26 +71,30 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 - [x] Admin dashboard
 - [x] Next.js rewrites proxy → Laravel API (no CORS in dev)
 
-### ⬜ Phase 5 — AI
-- [ ] Python AI worker service (FastAPI)
-- [ ] Image classification (category + confidence)
-- [ ] Image embeddings (duplicate detection)
-- [ ] Queue job wiring (Redis → worker → Laravel callback)
-- [ ] `ai_analyses` table
-- [ ] `issue_matches` table + duplicate detection flow
+### ✅ Phase 5 — AI
+- [x] Python AI worker service (FastAPI, port 9000)
+- [x] Image classification (category + confidence) + severity scoring + DCT embeddings
+- [x] Image embeddings (duplicate detection)
+- [x] Queue job wiring (Redis → worker → Laravel callback, `AnalyzeReport` job)
+- [x] `ai_analyses` table
+- [x] `issue_matches` table + duplicate detection flow (geo 300m + image + text, threshold 0.70)
 
-### ⬜ Phase 6 — Intelligence
-- [ ] Issue clustering / hotspot detection
-- [ ] Priority/severity scoring
-- [ ] Analytics endpoints
-- [ ] Community support (`issue_supports`)
+### ✅ Phase 6 — Intelligence
+- [x] Issue clustering / hotspot detection (grid cells)
+- [x] Priority/severity scoring (AI + volume + support + age + category blend)
+- [x] Analytics endpoints (summary, severity/status/category breakdowns)
+- [x] Community support (`issue_supports`)
 
-### ⬜ Phase 7 — Production Hardening
-- [ ] Caching, rate limiting, queues
-- [ ] Logging + monitoring
-- [ ] Tests (unit/feature)
-- [ ] Security hardening
-- [ ] Docker Compose + CI/CD
+### ✅ Phase 7 — Production Hardening
+- [x] Caching (Redis, 300s analytics/hotspots), rate limiting (auth/api/reports), queues
+- [x] Logging + slow-query monitoring (`slow_query_threshold_ms`)
+- [x] Tests (28 feature + unit, expanded to 47; AI worker pytest suite)
+- [x] Security hardening (role middleware, input validation, rate limits)
+- [x] Docker Compose (postgres, redis, ai-worker, backend, queue-worker, scheduler, frontend) + CI/CD (GitHub Actions)
+- [x] Notifications (status changes, assignments, duplicate detection, moderation)
+- [x] API documentation (Scramble OpenAPI `/docs/api`) + Postman collection
+- [x] Admin moderation queue (frontend)
+- [x] Scheduler (nightly priority recompute, AI retry) + demo seed data
 
 ---
 
@@ -105,6 +109,10 @@ Status values: `PROCESSING → REPORTED → UNDER_REVIEW → VERIFIED → ASSIGN
 | 2026-08-16 | 3 | Nearby issues (ST_DWithin) + heatmap grid aggregation | ✅ Done |
 | 2026-08-16 | 4 | Admin dashboard, teams, assignments, review/severity/status management | ✅ Done |
 | 2026-08-16 | Frontend | Next.js 16 app: auth, report form, my reports, Leaflet explore map, admin dashboard, API proxy | ✅ Done |
+| 2026-08-17 | 5 | FastAPI AI worker (classification, severity, DCT embeddings), `ai_analyses` + `issue_matches`, duplicate detection (geo 300m + image + text, 0.70 threshold), queue job wiring, E2E verified (report → analysis → issue/merge) | ✅ Done |
+| 2026-08-17 | 6 | Priority scoring service, hotspot grid clustering, analytics + priorities endpoints, admin intelligence API | ✅ Done |
+| 2026-08-17 | 7 | Redis caching + rate limiting + slow-query logging; 47 backend tests + 7 AI worker tests; Docker full stack + CI/CD | ✅ Done |
+| 2026-08-17 | 7 | Notifications (status/assignment/duplicate/moderation), Scramble OpenAPI docs + Postman collection, admin moderation queue frontend, scheduler + demo seeder | ✅ Done |
 
 ---
 
