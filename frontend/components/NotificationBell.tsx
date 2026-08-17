@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { api, type NotificationItem } from "@/lib/api";
 
 export function NotificationBell() {
@@ -95,6 +96,15 @@ export function NotificationBell() {
                 </p>
               </button>
             ))}
+          </div>
+        <div className="border-t border-gray-100 px-3 py-2">
+            <Link
+              href="/notifications"
+              onClick={() => setOpen(false)}
+              className="block text-center text-xs font-medium text-teal-600 hover:underline"
+            >
+              View all
+            </Link>
           </div>
         </div>
       )}
