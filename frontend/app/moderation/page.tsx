@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { PageHeader } from "@/components/ui";
 import { api, type Report } from "@/lib/api";
 
 const STATUS_STYLES: Record<string, string> = {
@@ -37,31 +38,33 @@ export default function ModerationPage() {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900">Moderation Queue</h1>
-        <p className="mt-1 text-sm text-gray-500">Verify or reject pending reports.</p>
-        {error && <p className="mt-4 rounded bg-red-50 p-2 text-sm text-red-700">{error}</p>}
-        {loading && <p className="mt-6 text-gray-500">Loading...</p>}
+        <PageHeader
+          title="Moderation Queue"
+          subtitle="Verify or reject pending reports. AI hints shown when available."
+        />
+        {error && <p className="mt-4 rounded-lg bg-rose-50 p-2 text-sm text-rose-700">{error}</p>}
+        {loading && <p className="mt-6 text-slate-500">Loading...</p>}
         <ul className="mt-6 space-y-3">
           {reports.map((report) => (
-            <li key={report.id} className="rounded-lg border border-gray-200 bg-white p-4">
+            <li key={report.id} className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-sm text-gray-500">{report.public_id}</span>
+                <span className="font-mono text-sm text-slate-400">{report.public_id}</span>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    STATUS_STYLES[report.status] ?? "bg-gray-100 text-gray-700"
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    STATUS_STYLES[report.status] ?? "bg-slate-100 text-slate-700"
                   }`}
                 >
                   {report.status}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-gray-700">{report.description ?? "No description"}</p>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-2 text-sm text-slate-700">{report.description ?? "No description"}</p>
+              <p className="mt-1 text-xs text-slate-400">
                 {report.category?.name ?? "Unclassified"} · by {report.user?.name ?? "Anonymous"} ·{" "}
                 {new Date(report.created_at).toLocaleString()}
               </p>
               {report.analyses?.[0] && report.analyses[0].status === "COMPLETED" && (
                 <p className="mt-1 text-xs text-teal-700">
-                  AI: {report.analyses[0].predicted_category_slug?.replace(/_/g, " ")} ·{" "}
+                  ✨ AI: {report.analyses[0].predicted_category_slug?.replace(/_/g, " ")} ·{" "}
                   {report.analyses[0].confidence !== null
                     ? `${Math.round(report.analyses[0].confidence * 100)}%`
                     : "n/a"}{" "}
@@ -75,21 +78,21 @@ export default function ModerationPage() {
                 <button
                   onClick={() => act(report, "verify")}
                   disabled={busy === report.id}
-                  className="rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-500 disabled:opacity-50"
+                  className="btn-primary !px-3 !py-1.5 text-xs"
                 >
                   ✓ Verify
                 </button>
                 <button
                   onClick={() => act(report, "reject")}
                   disabled={busy === report.id}
-                  className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-500 disabled:opacity-50"
+                  className="btn-danger !px-3 !py-1.5 text-xs"
                 >
                   ✕ Reject
                 </button>
               </div>
             </li>
           ))}
-          {!loading && reports.length === 0 && <p className="text-gray-500">Queue is clear.</p>}
+          {!loading && reports.length === 0 && <p className="text-slate-500">Queue is clear. 🎉</p>}
         </ul>
       </main>
     </>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { PageHeader } from "@/components/ui";
 import { api, type NotificationItem } from "@/lib/api";
 
 const TYPE_STYLES: Record<string, string> = {
@@ -38,40 +39,43 @@ export default function NotificationsPage() {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-          {items.some((n) => !n.read_at) && (
-            <button onClick={markAll} className="text-sm text-teal-600 hover:underline">
-              Mark all read
-            </button>
-          )}
-        </div>
-        {loading && <p className="mt-6 text-gray-500">Loading...</p>}
+        <PageHeader
+          title="Notifications"
+          subtitle="Updates on your reports, issues and assignments"
+          action={
+            items.some((n) => !n.read_at) ? (
+              <button onClick={markAll} className="text-sm font-semibold text-teal-600 hover:underline">
+                Mark all read
+              </button>
+            ) : undefined
+          }
+        />
+        {loading && <p className="mt-6 text-slate-500">Loading...</p>}
         <ul className="mt-6 space-y-3">
           {items.map((n) => {
             const issueId = n.data?.issue_public_id as string | undefined;
             return (
               <li
                 key={n.id}
-                className={`rounded-lg border border-gray-200 bg-white p-4 ${n.read_at ? "opacity-70" : ""}`}
+                className={`card p-4 transition-all hover:shadow-soft ${n.read_at ? "opacity-70" : ""}`}
               >
                 <div className="flex items-center justify-between">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                      TYPE_STYLES[n.type] ?? "bg-gray-100 text-gray-700"
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                      TYPE_STYLES[n.type] ?? "bg-slate-100 text-slate-700"
                     }`}
                   >
                     {n.type.replace(/_/g, " ")}
                   </span>
-                  {!n.read_at && <span className="h-2 w-2 rounded-full bg-red-500" />}
+                  {!n.read_at && <span className="h-2 w-2 animate-pulse rounded-full bg-gradient-to-r from-rose-500 to-red-500" />}
                 </div>
-                <p className="mt-2 text-sm font-semibold text-gray-900">{n.title}</p>
-                {n.message && <p className="mt-0.5 text-sm text-gray-600">{n.message}</p>}
-                <p className="mt-1 text-xs text-gray-400">{new Date(n.created_at).toLocaleString()}</p>
+                <p className="mt-2 text-sm font-semibold text-slate-900">{n.title}</p>
+                {n.message && <p className="mt-0.5 text-sm text-slate-600">{n.message}</p>}
+                <p className="mt-1 text-xs text-slate-400">{new Date(n.created_at).toLocaleString()}</p>
                 {issueId && (
                   <Link
                     href={`/issues/${issueId}`}
-                    className="mt-2 inline-block text-xs font-medium text-teal-600 hover:underline"
+                    className="mt-2 inline-block text-xs font-semibold text-teal-600 hover:underline"
                   >
                     View issue →
                   </Link>
@@ -79,7 +83,7 @@ export default function NotificationsPage() {
               </li>
             );
           })}
-          {!loading && items.length === 0 && <p className="text-gray-500">No notifications yet.</p>}
+          {!loading && items.length === 0 && <p className="text-slate-500">No notifications yet.</p>}
         </ul>
       </main>
     </>

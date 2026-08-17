@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { PageHeader } from "@/components/ui";
 import { api, type User } from "@/lib/api";
 
 type Stats = { reports_submitted: number; issues_supported: number; member_since: string };
@@ -27,7 +28,7 @@ export default function ProfilePage() {
       <>
         <Navbar />
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-slate-500">Loading...</p>
         </main>
       </>
     );
@@ -38,7 +39,7 @@ export default function ProfilePage() {
       <>
         <Navbar />
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-          <p className="text-gray-500">Please log in.</p>
+          <p className="text-slate-500">Please log in.</p>
         </main>
       </>
     );
@@ -48,42 +49,36 @@ export default function ProfilePage() {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-        <div className="mt-4 rounded-lg border border-gray-200 bg-white p-5">
+        <PageHeader title="Profile" subtitle="Your account and community activity" />
+        <div className="card p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal-600 text-lg font-bold text-white">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-gradient text-2xl font-bold text-white shadow-md shadow-teal-500/30">
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <p className="text-lg font-semibold text-gray-900">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <p className="text-xl font-bold text-slate-900">{user.name}</p>
+              <p className="text-sm text-slate-500">{user.email}</p>
             </div>
           </div>
-          <dl className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-lg bg-gray-50 p-3 text-center">
-              <dt className="text-xs uppercase tracking-wide text-gray-500">Reports</dt>
-              <dd className="mt-1 text-2xl font-bold text-gray-900">{stats?.reports_submitted ?? 0}</dd>
+          <dl className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-50 p-3 text-center">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-teal-700">Reports</dt>
+              <dd className="mt-1 text-2xl font-extrabold text-teal-800">{stats?.reports_submitted ?? 0}</dd>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3 text-center">
-              <dt className="text-xs uppercase tracking-wide text-gray-500">Issues supported</dt>
-              <dd className="mt-1 text-2xl font-bold text-gray-900">{stats?.issues_supported ?? 0}</dd>
+            <div className="rounded-2xl bg-gradient-to-br from-sky-50 to-indigo-50 p-3 text-center">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-sky-700">Issues supported</dt>
+              <dd className="mt-1 text-2xl font-extrabold text-sky-800">{stats?.issues_supported ?? 0}</dd>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3 text-center">
-              <dt className="text-xs uppercase tracking-wide text-gray-500">Member since</dt>
-              <dd className="mt-1 text-lg font-bold text-gray-900">{stats?.member_since ?? "—"}</dd>
+            <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-3 text-center">
+              <dt className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Member since</dt>
+              <dd className="mt-1 text-lg font-bold text-emerald-800">{stats?.member_since ?? "—"}</dd>
             </div>
           </dl>
-          <div className="mt-5 flex gap-3">
-            <Link
-              href="/my-reports"
-              className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500"
-            >
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/my-reports" className="btn-primary text-sm !px-4 !py-2">
               My Reports
             </Link>
-            <Link
-              href="/report"
-              className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-            >
+            <Link href="/report" className="btn-secondary text-sm !px-4 !py-2">
               Report an Issue
             </Link>
           </div>

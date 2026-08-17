@@ -68,40 +68,40 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-20 mt-2 w-80 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-          <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
-            <p className="text-sm font-semibold text-gray-900">Notifications</p>
+        <div className="glass absolute right-0 z-20 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 shadow-soft">
+          <div className="flex items-center justify-between border-b border-slate-200/70 px-3 py-2">
+            <p className="text-sm font-semibold text-slate-900">Notifications</p>
             {unread > 0 && (
-              <button onClick={markAll} className="text-xs text-teal-600 hover:underline">
+              <button onClick={markAll} className="text-xs font-semibold text-teal-600 hover:underline">
                 Mark all read
               </button>
             )}
           </div>
           <div className="max-h-80 overflow-y-auto">
             {items.length === 0 && (
-              <p className="px-3 py-6 text-center text-sm text-gray-400">No notifications</p>
+              <p className="px-3 py-6 text-center text-sm text-slate-400">No notifications</p>
             )}
             {items.map((n) => (
               <button
                 key={n.id}
                 onClick={() => markOne(n.id)}
-                className={`block w-full px-3 py-2 text-left text-sm hover:bg-gray-50 ${
+                className={`block w-full px-3 py-2 text-left text-sm hover:bg-teal-50/50 ${
                   n.read_at ? "opacity-60" : ""
                 }`}
               >
-                <p className="font-medium text-gray-800">{n.title}</p>
-                {n.message && <p className="text-xs text-gray-500">{n.message}</p>}
-                <p className="mt-0.5 text-[10px] uppercase tracking-wide text-gray-400">
+                <p className="font-medium text-slate-800">{n.title}</p>
+                {n.message && <p className="text-xs text-slate-500">{n.message}</p>}
+                <p className="mt-0.5 text-[10px] uppercase tracking-wide text-slate-400">
                   {n.type.replace(/_/g, " ")} · {new Date(n.created_at).toLocaleString()}
                 </p>
               </button>
             ))}
           </div>
-        <div className="border-t border-gray-100 px-3 py-2">
+        <div className="border-t border-slate-200/70 px-3 py-2">
             <Link
               href="/notifications"
               onClick={() => setOpen(false)}
-              className="block text-center text-xs font-medium text-teal-600 hover:underline"
+              className="block text-center text-xs font-semibold text-teal-600 hover:underline"
             >
               View all
             </Link>

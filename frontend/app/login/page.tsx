@@ -31,44 +31,54 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <main className="flex flex-1 items-center justify-center px-4">
-        <form onSubmit={onSubmit} className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-6">
-          <h1 className="text-xl font-semibold text-gray-900">Login</h1>
-          {error && <p className="mt-3 rounded bg-red-50 p-2 text-sm text-red-700">{error}</p>}
-          <label className="mt-4 block text-sm font-medium text-gray-700">
-            Email
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
-            />
-          </label>
-          <label className="mt-3 block text-sm font-medium text-gray-700">
-            Password
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={busy}
-            className="mt-5 w-full rounded-md bg-gray-900 py-2 font-medium text-white hover:bg-gray-700 disabled:opacity-50"
-          >
-            {busy ? "Logging in..." : "Login"}
-          </button>
-          <p className="mt-3 text-sm text-gray-500">
+      <main className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="gradient-border w-full max-w-sm rounded-2xl p-8 shadow-soft">
+          <div className="text-center">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient text-xl font-bold text-white shadow-md shadow-teal-500/30">
+              👀
+            </span>
+            <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+              <span className="text-gradient">Welcome back</span>
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">Sign in to report and track issues</p>
+          </div>
+          {error && (
+            <p className="mt-4 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
+          )}
+          <form onSubmit={onSubmit} className="mt-6 space-y-4">
+            <label className="block text-sm font-medium text-slate-700">
+              Email
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="input mt-1.5"
+              />
+            </label>
+            <label className="block text-sm font-medium text-slate-700">
+              Password
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="input mt-1.5"
+              />
+            </label>
+            <button type="submit" disabled={busy} className="btn-primary w-full">
+              {busy ? "Logging in..." : "Login"}
+            </button>
+          </form>
+          <p className="mt-4 text-center text-sm text-slate-500">
             No account?{" "}
-            <Link href="/register" className="text-blue-600 hover:underline">
+            <Link href="/register" className="font-semibold text-teal-600 hover:underline">
               Register
             </Link>
           </p>
-        </form>
+        </div>
       </main>
     </>
   );

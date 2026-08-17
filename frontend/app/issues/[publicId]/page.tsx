@@ -50,7 +50,7 @@ export default function IssueDetailPage({ params }: { params: { publicId: string
       <>
         <Navbar />
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-          <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>
+          <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>
         </main>
       </>
     );
@@ -60,84 +60,86 @@ export default function IssueDetailPage({ params }: { params: { publicId: string
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
-        {!issue && <p className="text-gray-500">Loading...</p>}
+        {!issue && <p className="text-slate-500">Loading...</p>}
         {issue && (
           <>
             <div className="flex items-center justify-between">
-              <Link href="/explore" className="text-sm text-teal-600 hover:underline">
+              <Link href="/explore" className="text-sm font-semibold text-teal-600 hover:underline">
                 ← Back to map
               </Link>
               <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                  STATUS_STYLES[issue.status] ?? "bg-gray-100 text-gray-700"
+                className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                  STATUS_STYLES[issue.status] ?? "bg-slate-100 text-slate-700"
                 }`}
               >
                 {issue.status}
               </span>
             </div>
 
-            <h1 className="mt-4 text-2xl font-bold text-gray-900">{issue.title}</h1>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{issue.title}</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
               <span className="font-mono">{issue.public_id}</span>
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  SEVERITY_STYLES[issue.severity] ?? "bg-gray-100 text-gray-700"
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  SEVERITY_STYLES[issue.severity] ?? "bg-slate-100 text-slate-700"
                 }`}
               >
                 {issue.severity}
               </span>
-              <span>{issue.category?.name ?? "Unclassified"}</span>
+              <span className="rounded-full bg-gradient-to-r from-teal-50 to-sky-50 px-2.5 py-0.5 text-xs font-medium text-teal-700">
+                {issue.category?.name ?? "Unclassified"}
+              </span>
               <span>· {issue.supports?.length ?? 0} supports</span>
             </div>
 
             {issue.description && (
-              <p className="mt-4 text-gray-700">{issue.description}</p>
+              <p className="mt-4 text-slate-700">{issue.description}</p>
             )}
 
             <button
               onClick={support}
               disabled={supporting}
-              className="mt-5 rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500 disabled:opacity-50"
+              className="btn-primary mt-5"
             >
               {supporting ? "Supporting..." : "👍 I confirm this issue"}
             </button>
 
-            <h2 className="mt-8 text-lg font-semibold text-gray-900">Status History</h2>
-            <ol className="mt-3 space-y-3 border-l-2 border-gray-200 pl-4">
+            <h2 className="mt-8 text-lg font-semibold text-slate-900">Status History</h2>
+            <ol className="mt-3 space-y-3 border-l-2 border-teal-200 pl-4">
               {issue.statusHistory.map((h) => (
                 <li key={h.id} className="relative text-sm">
                   <span className="absolute -left-[23px] top-1 h-3 w-3 rounded-full border-2 border-teal-500 bg-white" />
-                  <p className="text-gray-800">
+                  <p className="text-slate-800">
                     <span className="font-medium">{h.to_status.replace(/_/g, " ")}</span>
-                    {h.from_status && <span className="text-gray-400"> (from {h.from_status.replace(/_/g, " ")})</span>}
+                    {h.from_status && <span className="text-slate-400"> (from {h.from_status.replace(/_/g, " ")})</span>}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-slate-400">
                     {h.changed_by ? h.changed_by.name : "System"} · {new Date(h.created_at).toLocaleString()}
-                    {h.reason && <span className="text-gray-500"> — {h.reason}</span>}
+                    {h.reason && <span className="text-slate-500"> — {h.reason}</span>}
                   </p>
                 </li>
               ))}
             </ol>
 
-            <h2 className="mt-8 text-lg font-semibold text-gray-900">Reports ({issue.reports?.length ?? 0})</h2>
+            <h2 className="mt-8 text-lg font-semibold text-slate-900">Reports ({issue.reports?.length ?? 0})</h2>
             <ul className="mt-3 space-y-3">
               {issue.reports?.map((report) => (
-                <li key={report.id} className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
+                <li key={report.id} className="card p-3 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-gray-500">{report.public_id}</span>
-                    <span className="text-gray-400">{report.user?.name ?? "Anonymous"}</span>
+                    <span className="font-mono text-slate-400">{report.public_id}</span>
+                    <span className="text-slate-400">{report.user?.name ?? "Anonymous"}</span>
                   </div>
-                  {report.description && <p className="mt-1 text-gray-700">{report.description}</p>}
+                  {report.description && <p className="mt-1 text-slate-700">{report.description}</p>}
                   {report.media?.length > 0 && (
                     <img
                       src={`/storage/${report.media[0].url}`}
                       alt="Report photo"
-                      className="mt-2 h-24 rounded-md object-cover"
+                      className="mt-2 h-24 rounded-xl object-cover"
                     />
                   )}
                 </li>
               ))}
-              {issue.reports?.length === 0 && <p className="text-gray-500">No reports linked.</p>}
+              {issue.reports?.length === 0 && <p className="text-slate-500">No reports linked.</p>}
             </ul>
           </>
         )}

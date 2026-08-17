@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
+import { PageHeader } from "@/components/ui";
 import { api } from "@/lib/api";
 
 const LocationPicker = dynamic(() => import("@/components/LocationPicker").then((m) => m.LocationPicker), {
   ssr: false,
-  loading: () => <div className="h-56 w-full animate-pulse rounded-lg bg-gray-100" />,
+  loading: () => <div className="h-56 w-full animate-pulse rounded-xl bg-slate-100" />,
 });
 
 export default function ReportPage() {
@@ -70,36 +71,39 @@ export default function ReportPage() {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-lg flex-1 px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900">Report an Issue</h1>
-        <form onSubmit={onSubmit} className="mt-6 space-y-5">
-          {error && <p className="rounded bg-red-50 p-2 text-sm text-red-700">{error}</p>}
+        <PageHeader
+          title="Report an Issue"
+          subtitle="Photo + location required. AI classifies severity and checks duplicates."
+        />
+        <form onSubmit={onSubmit} className="card mt-6 space-y-5 p-6">
+          {error && <p className="rounded-lg bg-rose-50 p-2 text-sm text-rose-700">{error}</p>}
 
           <div>
-            <p className="text-sm font-medium text-gray-700">Photo</p>
+            <p className="text-sm font-semibold text-slate-700">Photo</p>
             {preview && (
-              <img src={preview} alt="Preview" className="mt-2 h-48 w-full rounded-lg object-cover" />
+              <img src={preview} alt="Preview" className="mt-2 h-48 w-full rounded-xl object-cover" />
             )}
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
               onChange={onFileChange}
-              className="mt-2 w-full text-sm text-gray-600"
+              className="mt-2 w-full text-sm text-slate-600"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-gray-700">Location</p>
+              <p className="text-sm font-semibold text-slate-700">Location</p>
               <button
                 type="button"
                 onClick={detectLocation}
-                className="text-xs font-medium text-teal-600 hover:underline"
+                className="text-xs font-semibold text-teal-600 hover:underline"
               >
-                Use my location
+                📍 Use my location
               </button>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 overflow-hidden rounded-xl">
               <LocationPicker
                 lat={lat ? Number(lat) : null}
                 lng={lng ? Number(lng) : null}
@@ -112,44 +116,40 @@ export default function ReportPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Latitude
               <input
                 required
                 value={lat}
                 onChange={(e) => setLat(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+                className="input mt-1.5"
                 placeholder="23.8103"
               />
             </label>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-slate-700">
               Longitude
               <input
                 required
                 value={lng}
                 onChange={(e) => setLng(e.target.value)}
-                className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+                className="input mt-1.5"
                 placeholder="90.4125"
               />
             </label>
           </div>
 
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-slate-700">
             Description (optional)
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="input mt-1.5 resize-none"
             />
           </label>
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded-md bg-gray-900 py-2 font-medium text-white hover:bg-gray-700 disabled:opacity-50"
-          >
-            {busy ? "Submitting..." : "Submit Report"}
+          <button type="submit" disabled={busy} className="btn-primary w-full">
+            {busy ? "Submitting..." : "📸 Submit Report"}
           </button>
         </form>
       </main>

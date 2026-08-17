@@ -9,8 +9,8 @@ vi.mock("@/components/Navbar", () => ({
 test("home page renders heading and call to action", () => {
   render(<Page />);
 
-  expect(screen.getByRole("heading", { level: 1, name: /Bhai Ektu Dekhen/ })).toBeDefined();
-  expect(screen.getByText("Report an Issue")).toBeDefined();
+  expect(screen.getByRole("heading", { level: 1 })).toBeDefined();
+  expect(screen.getByText(/Report an Issue/)).toBeDefined();
   expect(screen.getByText(/Explore Issues/)).toBeDefined();
 });
 

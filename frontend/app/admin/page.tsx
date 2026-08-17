@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { Breakdown, PageHeader, Stat } from "@/components/ui";
 import { api } from "@/lib/api";
 
 type Dashboard = {
@@ -30,37 +31,35 @@ export default function AdminPage() {
     <>
       <Navbar />
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900">Authority Dashboard</h1>
-        {error && <p className="mt-4 rounded bg-red-50 p-2 text-sm text-red-700">{error}</p>}
-        {!dash && !error && <p className="mt-4 text-gray-500">Loading...</p>}
+        <PageHeader title="Authority Dashboard" subtitle="Overview of civic issues and workloads" />
+        {error && <p className="mt-4 rounded-lg bg-rose-50 p-2 text-sm text-rose-700">{error}</p>}
+        {!dash && !error && <p className="mt-4 text-slate-500">Loading...</p>}
         {dash && (
           <>
-            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4">
               <Stat label="Total Issues" value={dash.total_issues} />
               <Stat label="Open Issues" value={dash.open_issues} />
               <Stat label="Resolved" value={dash.resolved_issues} />
-              <Link href="/moderation" className="rounded-lg border border-gray-200 bg-white p-4 hover:border-teal-400">
-                <p className="text-xs uppercase tracking-wide text-gray-400">Pending Reports</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{dash.pending_reports}</p>
+              <Link
+                href="/moderation"
+                className="card block p-4 transition-all hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-soft"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Pending Reports
+                </p>
+                <p className="mt-1 bg-gradient-to-r from-teal-500 to-sky-600 bg-clip-text text-2xl font-extrabold text-transparent">
+                  {dash.pending_reports}
+                </p>
               </Link>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/moderation"
-                className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500"
-              >
+              <Link href="/moderation" className="btn-primary text-sm !px-4 !py-2">
                 Open Moderation Queue
               </Link>
-              <Link
-                href="/assignments"
-                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-              >
+              <Link href="/assignments" className="btn-secondary text-sm !px-4 !py-2">
                 Manage Assignments
               </Link>
-              <Link
-                href="/analytics"
-                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-              >
+              <Link href="/analytics" className="btn-secondary text-sm !px-4 !py-2">
                 Analytics
               </Link>
             </div>
@@ -68,18 +67,19 @@ export default function AdminPage() {
               <Breakdown title="By Status" data={dash.by_status} />
               <Breakdown title="By Severity" data={dash.by_severity} />
             </div>
-            <h2 className="mt-8 text-lg font-semibold text-gray-900">Recent Issues</h2>
+            <h2 className="mt-8 text-lg font-semibold text-slate-900">Recent Issues</h2>
             <ul className="mt-3 space-y-2">
               {dash.recent_issues.map((issue) => (
                 <li key={issue.public_id}>
                   <Link
                     href={`/issues/${issue.public_id}`}
-                    className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm hover:border-teal-400"
+                    className="card flex items-center justify-between p-3 text-sm transition-all hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-soft"
                   >
                     <span>
-                      <span className="font-mono text-gray-500">{issue.public_id}</span> {issue.title}
+                      <span className="font-mono text-slate-400">{issue.public_id}</span>{" "}
+                      <span className="font-medium text-slate-800">{issue.title}</span>
                     </span>
-                    <span className="text-gray-400">
+                    <span className="text-xs text-slate-400">
                       {issue.status} · {issue.severity}
                     </span>
                   </Link>
@@ -90,30 +90,5 @@ export default function AdminPage() {
         )}
       </main>
     </>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-gray-900">{value}</p>
-    </div>
-  );
-}
-
-function Breakdown({ title, data }: { title: string; data: Record<string, number> }) {
-  return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <p className="text-sm font-semibold text-gray-700">{title}</p>
-      <ul className="mt-2 space-y-1 text-sm">
-        {Object.entries(data).map(([k, v]) => (
-          <li key={k} className="flex justify-between">
-            <span className="text-gray-500">{k}</span>
-            <span className="font-medium text-gray-900">{v}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
