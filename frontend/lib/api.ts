@@ -30,6 +30,7 @@ export type Report = {
   category: Category | null;
   media: Media[];
   analyses?: AiAnalysis[];
+  user?: { id: number; name: string } | null;
 };
 
 export type Issue = {
@@ -162,4 +163,13 @@ export const api = {
     request<{ data: { notification: NotificationItem } }>(`/notifications/${id}/read`, { method: 'POST' }),
   markAllNotificationsRead: () =>
     request<{ data: { unread_count: number } }>('/notifications/read-all', { method: 'POST' }),
+  moderationQueue: () =>
+    request<{ data: { reports: { data: Report[] } } }>('/admin/moderation'),
+  verifyReport: (publicId: string) =>
+    request<{ data: { report: Report } }>(`/reports/${publicId}/verify`, { method: 'POST' }),
+  rejectReport: (publicId: string, reason: string) =>
+    request<{ data: { report: Report } }>(`/reports/${publicId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    }),
 };

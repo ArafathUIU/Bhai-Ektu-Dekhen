@@ -45,6 +45,26 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * Pending reports awaiting moderator review.
+     */
+    public function moderationQueue(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'status' => ['nullable', 'string'],
+        ]);
+
+        $reports = Report::with(['media', 'category', 'user', 'analyses' => fn ($q) => $q->latest()])
+            ->whereIn('status', [Report::STATUS_PROCESSING, Report::STATUS_REPORTED])
+            ->when($validated['status'] ?? null, fn ($q, $s) => $q->where('status', $s))
+            ->latest()
+            ->paginate(15);
+
+        return response()->json([
+            'data' => ['reports' => $reports],
+        ]);
+    }
+
     public function storeTeam(Request $request): JsonResponse
     {
         $validated = $request->validate([

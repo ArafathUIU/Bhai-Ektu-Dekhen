@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::get('/intelligence/priorities', [IntelligenceController::class, 'priorities']);
             Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+            Route::get('/admin/moderation', [AdminController::class, 'moderationQueue']);
             Route::get('/admin/teams', [AdminController::class, 'teams']);
             Route::post('/admin/teams', [AdminController::class, 'storeTeam']);
             Route::post('/admin/issues/{publicId}/assign', [AdminController::class, 'assign']);

@@ -28,6 +28,9 @@ export function Navbar() {
                   <Link href="/admin" className="text-gray-600 hover:text-gray-900">
                     Admin
                   </Link>
+                  <Link href="/moderation" className="text-gray-600 hover:text-gray-900">
+                    Moderation
+                  </Link>
                   <Link href="/analytics" className="text-gray-600 hover:text-gray-900">
                     Analytics
                   </Link>
