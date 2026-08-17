@@ -30,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="blob blob-2" />
           <div className="blob blob-3" />
         </div>
+        <div className="grid-overlay" aria-hidden="true" />
         <AuthProvider>
           <div className="relative z-10 flex min-h-screen flex-col">{children}</div>
         </AuthProvider>
