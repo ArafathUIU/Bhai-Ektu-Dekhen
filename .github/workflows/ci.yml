@@ -80,3 +80,11 @@ jobs:
       - name: Build
         working-directory: frontend
         run: npm run build
+
+  compose:
+    name: Docker Compose validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate compose file
+        run: docker compose config --quiet
