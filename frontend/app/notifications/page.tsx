@@ -59,7 +59,7 @@ export default function NotificationsPage() {
                 key={n.id}
                 className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}
               >
-                <div className={`card p-4 transition-all hover:shadow-soft ${n.read_at ? "opacity-70" : ""}`}>
+                <div className={`card card-accent p-4 transition-all hover:shadow-soft ${n.read_at ? "opacity-70" : ""}`}>
                 <div className="flex items-center justify-between">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${

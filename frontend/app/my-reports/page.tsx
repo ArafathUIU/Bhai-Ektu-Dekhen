@@ -43,7 +43,7 @@ export default function MyReportsPage() {
         <ul className="mt-6 space-y-3">
           {reports.map((report, i) => (
             <li key={report.public_id} className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}>
-              <div className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
+              <div className="card card-accent p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm text-slate-400">{report.public_id}</span>
                 <span

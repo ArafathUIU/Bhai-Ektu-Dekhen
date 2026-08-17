@@ -113,8 +113,14 @@ body {
 .gradient-border {
   border: 1px solid transparent;
   background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(238, 252, 250, 0.88)) padding-box,
     linear-gradient(120deg, #14b8a6, #0ea5e9, #3b82f6) border-box;
+  box-shadow: 0 12px 32px -12px rgba(13, 148, 136, 0.18);
+  transition: transform 0.22s ease, box-shadow 0.3s ease;
+}
+
+.gradient-border:hover {
+  box-shadow: 0 20px 44px -14px rgba(14, 165, 233, 0.3);
 }
 
 /* ── Glass surfaces ──────────────────────────────────────────────── */
@@ -247,10 +253,41 @@ body {
 
 /* ── Cards ───────────────────────────────────────────────────────── */
 .card {
-  border-radius: 1rem;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+  position: relative;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: linear-gradient(165deg, #ffffff 0%, #f6fbfa 55%, #eef6f9 100%);
+  box-shadow:
+    0 12px 30px -10px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(20, 184, 166, 0.4);
+  box-shadow:
+    0 22px 44px -14px rgba(13, 148, 136, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.card:active {
+  transform: translateY(-1px);
+}
+
+.card-accent {
+  overflow: hidden;
+}
+
+.card-accent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.4rem;
+  right: 1.4rem;
+  height: 3px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(90deg, #14b8a6, #0ea5e9, #2563eb);
 }
 
 /* ── Animations ──────────────────────────────────────────────────── */

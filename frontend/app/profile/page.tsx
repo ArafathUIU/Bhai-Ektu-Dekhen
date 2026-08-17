@@ -50,7 +50,7 @@ export default function ProfilePage() {
       <Navbar />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
         <PageHeader title="Profile" subtitle="Your account and community activity" />
-        <div className="card p-6">
+        <div className="card card-accent p-6">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-gradient text-2xl font-bold text-white shadow-md shadow-teal-500/30">
               {user.name.charAt(0).toUpperCase()}
