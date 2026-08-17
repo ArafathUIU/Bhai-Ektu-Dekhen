@@ -9,7 +9,7 @@ import { api } from "@/lib/api";
 
 const LocationPicker = dynamic(() => import("@/components/LocationPicker").then((m) => m.LocationPicker), {
   ssr: false,
-  loading: () => <div className="h-56 w-full animate-pulse rounded-xl bg-slate-100" />,
+  loading: () => <div className="skeleton h-56 w-full rounded-xl" />,
 });
 
 export default function ReportPage() {

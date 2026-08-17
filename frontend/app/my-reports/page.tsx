@@ -41,8 +41,9 @@ export default function MyReportsPage() {
         />
         {loading && <p className="mt-6 text-slate-500">Loading...</p>}
         <ul className="mt-6 space-y-3">
-          {reports.map((report) => (
-            <li key={report.public_id} className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
+          {reports.map((report, i) => (
+            <li key={report.public_id} className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}>
+              <div className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm text-slate-400">{report.public_id}</span>
                 <span
@@ -69,6 +70,7 @@ export default function MyReportsPage() {
               {report.analyses && report.analyses.length > 0 && (
                 <AnalysisCard analysis={report.analyses[0]} />
               )}
+              </div>
             </li>
           ))}
           {!loading && reports.length === 0 && (

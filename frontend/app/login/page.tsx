@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -32,13 +33,13 @@ export default function LoginPage() {
     <>
       <Navbar />
       <main className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="gradient-border w-full max-w-sm rounded-2xl p-8 shadow-soft">
+        <div className="gradient-border animate-fade-up w-full max-w-sm rounded-2xl p-8 shadow-soft">
           <div className="text-center">
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gradient text-xl font-bold text-white shadow-md shadow-teal-500/30">
-              👀
+            <span className="animate-ring inline-flex rounded-2xl">
+              <Logo size={52} />
             </span>
             <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">
-              <span className="text-gradient">Welcome back</span>
+              <span className="text-gradient-animated">Welcome back</span>
             </h1>
             <p className="mt-1 text-sm text-slate-500">Sign in to report and track issues</p>
           </div>
@@ -68,7 +69,7 @@ export default function LoginPage() {
                 className="input mt-1.5"
               />
             </label>
-            <button type="submit" disabled={busy} className="btn-primary w-full">
+            <button type="submit" disabled={busy} className="btn-primary btn-shine w-full">
               {busy ? "Logging in..." : "Login"}
             </button>
           </form>

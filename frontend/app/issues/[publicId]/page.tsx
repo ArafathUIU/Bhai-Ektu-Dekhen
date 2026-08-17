@@ -63,7 +63,7 @@ export default function IssueDetailPage({ params }: { params: { publicId: string
         {!issue && <p className="text-slate-500">Loading...</p>}
         {issue && (
           <>
-            <div className="flex items-center justify-between">
+            <div className="animate-fade-up flex items-center justify-between">
               <Link href="/explore" className="text-sm font-semibold text-teal-600 hover:underline">
                 ← Back to map
               </Link>
@@ -76,8 +76,10 @@ export default function IssueDetailPage({ params }: { params: { publicId: string
               </span>
             </div>
 
-            <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{issue.title}</h1>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <h1 className="animate-fade-up d-1 mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              {issue.title}
+            </h1>
+            <div className="animate-fade-up d-2 mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
               <span className="font-mono">{issue.public_id}</span>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${

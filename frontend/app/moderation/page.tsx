@@ -45,8 +45,9 @@ export default function ModerationPage() {
         {error && <p className="mt-4 rounded-lg bg-rose-50 p-2 text-sm text-rose-700">{error}</p>}
         {loading && <p className="mt-6 text-slate-500">Loading...</p>}
         <ul className="mt-6 space-y-3">
-          {reports.map((report) => (
-            <li key={report.id} className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
+          {reports.map((report, i) => (
+            <li key={report.id} className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}>
+              <div className="card p-4 transition-all hover:-translate-y-0.5 hover:shadow-soft">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm text-slate-400">{report.public_id}</span>
                 <span
@@ -89,6 +90,7 @@ export default function ModerationPage() {
                 >
                   ✕ Reject
                 </button>
+              </div>
               </div>
             </li>
           ))}

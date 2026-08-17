@@ -9,7 +9,7 @@ export function PageHeader({
 }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div>
+      <div className="animate-fade-up">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
@@ -36,7 +36,7 @@ export function GradientStat({
     violet: "from-violet-500 to-purple-600",
   };
   return (
-    <div className="card overflow-hidden p-4">
+    <div className="card animate-fade-up overflow-hidden p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</p>
       <p
         className={`mt-1 bg-gradient-to-r ${accents[accent ?? "teal"]} bg-clip-text text-3xl font-extrabold text-transparent`}
@@ -57,7 +57,7 @@ export function GradientBadge({ children }: { children: React.ReactNode }) {
 
 export function Stat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="card p-4">
+    <div className="card animate-fade-up p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</p>
       <p className="mt-1 text-2xl font-extrabold text-slate-900">{value}</p>
     </div>

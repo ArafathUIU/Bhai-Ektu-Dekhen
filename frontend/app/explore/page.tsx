@@ -9,7 +9,7 @@ import { api, type Category, type Issue } from "@/lib/api";
 
 const IssueMap = dynamic(() => import("@/components/IssueMap").then((m) => m.IssueMap), {
   ssr: false,
-  loading: () => <p className="p-4 text-slate-500">Loading map...</p>,
+  loading: () => <div className="skeleton h-full w-full" />,
 });
 
 const SEVERITY_STYLES: Record<string, string> = {
@@ -86,8 +86,8 @@ export default function ExplorePage() {
         </div>
         <h2 className="mt-8 text-lg font-semibold text-slate-900">All Issues</h2>
         <ul className="mt-3 grid gap-3 sm:grid-cols-2">
-          {issues.map((issue) => (
-            <li key={issue.public_id}>
+          {issues.map((issue, i) => (
+            <li key={issue.public_id} className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}>
               <Link
                 href={`/issues/${issue.public_id}`}
                 className="card flex items-center justify-between gap-3 p-4 text-sm transition-all hover:-translate-y-0.5 hover:shadow-soft"

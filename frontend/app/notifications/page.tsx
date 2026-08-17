@@ -52,13 +52,14 @@ export default function NotificationsPage() {
         />
         {loading && <p className="mt-6 text-slate-500">Loading...</p>}
         <ul className="mt-6 space-y-3">
-          {items.map((n) => {
+          {items.map((n, i) => {
             const issueId = n.data?.issue_public_id as string | undefined;
             return (
               <li
                 key={n.id}
-                className={`card p-4 transition-all hover:shadow-soft ${n.read_at ? "opacity-70" : ""}`}
+                className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}
               >
+                <div className={`card p-4 transition-all hover:shadow-soft ${n.read_at ? "opacity-70" : ""}`}>
                 <div className="flex items-center justify-between">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -80,6 +81,7 @@ export default function NotificationsPage() {
                     View issue →
                   </Link>
                 )}
+                </div>
               </li>
             );
           })}

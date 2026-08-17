@@ -69,8 +69,8 @@ export default function AdminPage() {
             </div>
             <h2 className="mt-8 text-lg font-semibold text-slate-900">Recent Issues</h2>
             <ul className="mt-3 space-y-2">
-              {dash.recent_issues.map((issue) => (
-                <li key={issue.public_id}>
+              {dash.recent_issues.map((issue, i) => (
+                <li key={issue.public_id} className={`animate-fade-up ${i < 5 ? `d-${i + 1}` : ""}`}>
                   <Link
                     href={`/issues/${issue.public_id}`}
                     className="card flex items-center justify-between p-3 text-sm transition-all hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-soft"
