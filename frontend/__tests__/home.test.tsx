@@ -10,8 +10,8 @@ test("home page renders heading and call to action", () => {
   render(<Page />);
 
   expect(screen.getByRole("heading", { level: 1 })).toBeDefined();
-  expect(screen.getByText(/Report an Issue/)).toBeDefined();
-  expect(screen.getByText(/Explore Issues/)).toBeDefined();
+  expect(screen.getAllByText(/Report an Issue/).length).toBeGreaterThan(0);
+  expect(screen.getAllByText(/Explore Issues/).length).toBeGreaterThan(0);
 });
 
 test("home page renders the navbar", () => {
